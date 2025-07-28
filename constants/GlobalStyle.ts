@@ -18,5 +18,12 @@ export const GlobalStyle = StyleSheet.create({
     padding: 12,
     borderRadius: 8,
   },
+  input: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+    },
   // Add more global styles as needed
 });

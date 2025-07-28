@@ -3,7 +3,7 @@
  * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
  */
 
-const tintColor ="#FF3C00"
+const tintColor ="#FF3C00";
 
 export const Colors = {
   light: {
@@ -22,5 +22,8 @@ export const Colors = {
     tabIconDefault: '#9BA1A6',
     tabIconSelected: tintColor,
   },
+  customColor:{
+    blue:"#3366B3",
+  }
  
 };

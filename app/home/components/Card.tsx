@@ -2,14 +2,13 @@ import { ThemedText } from "@/components/ThemedText";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { Colors } from "@/constants/Colors";
 import { GlobalStyle } from "@/constants/GlobalStyle";
-import { Image, StyleSheet, View } from "react-native";
+import { Image, StyleSheet, Text, View } from "react-native";
 
 export default function CardHome() {
   return (
     <View style={styles.container}>
       <View style={{ position: "relative" }}>
         <Image
-
           source={require("@/assets/images/biblio.jpg")}
           style={styles.image}
         />
@@ -26,24 +25,34 @@ export default function CardHome() {
           style={{ position: "absolute", top: 10, right: 15 }}
         />
       </View>
-     <View style={{paddingHorizontal: 10}}>
-       <View style={[styles.flexRow,{marginTop:7,marginBottom: 5}]}> 
-        <View>
-          <ThemedText type="defaultSemiBold">Inauguration de la médiathèque</ThemedText>
-          <ThemedText type="defaultSemiBold" style={styles.date}>Vendredi 13 Septembre 19h35</ThemedText>
+      <View style={{ paddingHorizontal: 10 }}>
+        <View style={[styles.flexRow, { marginTop: 7, marginBottom: 5 }]}>
+          <View>
+            <ThemedText type="defaultSemiBold">
+              Inauguration de la médiathèque
+            </ThemedText>
+            <ThemedText type="defaultSemiBold" style={styles.date}>
+              Vendredi 13 Septembre 19h35
+            </ThemedText>
+          </View>
+          <ThemedText type="defaultSemiBold">9,99€</ThemedText>
         </View>
-        <ThemedText type="defaultSemiBold">9.99€</ThemedText>
+        <View style={styles.flexRow}>
+          <ThemedText>
+          <Text style={{color:Colors.light.icon}}>Par{" "}</Text>
+            <ThemedText type="defaultSemiBold" style={styles.pseudoUser}>
+              @utilisateur
+            </ThemedText>{" "}
+            <ThemedText type="defaultSemiBold">0.8km</ThemedText>
+          </ThemedText>
+          <IconSymbol
+            name="location"
+            size={16}
+            color="gray"
+            style={{ marginLeft: 4 }}
+          />
+        </View>
       </View>
-      <View style={styles.flexRow}>
-        <ThemedText>Par @utilisateur 0.8km</ThemedText>
-        <IconSymbol
-          name="location"
-          size={16}
-          color="gray"
-          style={{ marginLeft: 4 }}
-        />
-      </View>
-     </View>
     </View>
   );
 }
@@ -51,12 +60,11 @@ export default function CardHome() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
   },
   image: {
     width: "100%",
     height: 200,
-    borderRadius:GlobalStyle.borderRadius.borderRadius,
+    borderRadius: GlobalStyle.borderRadius.borderRadius,
   },
   icon: {
     position: "absolute",
@@ -68,7 +76,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
-  date:{
-    color:Colors.light.tint
-  }
+  date: {
+    color: Colors.light.tint,
+  },
+  pseudoUser: {
+    color: Colors.customColor.blue,
+  },
 });
