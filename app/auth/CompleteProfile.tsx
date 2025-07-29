@@ -2,25 +2,39 @@ import Avatar from "@/components/auth/Avatar";
 import { supabase } from "@/lib/supabaseClient";
 import { Button, Input } from "@rneui/themed";
 import { router } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Alert, ScrollView, StyleSheet, View } from "react-native";
 
 export default function CompleteProfile() {
   const [pseudo, setPseudo] = useState("");
   const [avatarPath, setAvatarPath] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState(null);
 
-  async function handleSubmit() {
-    setLoading(true);
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+  // Vérifier la session au montage du composant
+  useEffect(() => {
+    checkUser();
+  }, []);
 
-    if (!user) {
-      Alert.alert("Erreur", "Utilisateur non connecté.");
-      setLoading(false);
+  async function checkUser() {
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    if (!session) {
+      Alert.alert("Erreur", "Session expirée. Veuillez vous reconnecter.");
+      router.push("/auth/Auth");
       return;
     }
+    
+    setUser(session.user);
+  }
+
+  async function handleSubmit() {
+    if (!user) {
+      Alert.alert("Erreur", "Utilisateur non connecté.");
+      return;
+    }
+
+    setLoading(true);
 
     const { error } = await supabase.from("profiles").upsert({
       id: user.id,
@@ -57,7 +71,7 @@ export default function CompleteProfile() {
           title="Terminer"
           onPress={handleSubmit}
           loading={loading}
-          disabled={loading || !pseudo}
+          disabled={loading || !pseudo || !user}
         />
       </ScrollView>
     </View>

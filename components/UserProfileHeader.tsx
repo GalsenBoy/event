@@ -1,5 +1,6 @@
-import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { ThemedText } from "./ThemedText";
+import Avatar from "./auth/Avatar";
 
 export default function UserProfileHeader({
   avatarUrl,
@@ -23,17 +24,21 @@ export default function UserProfileHeader({
   return (
     <View>
       <View style={styles.container}>
-        <Image source={{ uri: avatarUrl }} style={styles.avatar} />
+        <Avatar size={110} url={avatarUrl} onUpload={() => {}} />
         <View style={styles.infoContainer}>
-          <ThemedText type="subtitle" >{username}</ThemedText>
+          <ThemedText type="subtitle">{username}</ThemedText>
           <View style={styles.topRow}>
             <View style={styles.stats}>
               <View>
-                <ThemedText type="subtitle" style={styles.statNumber}>{followers} </ThemedText>
+                <ThemedText type="subtitle" style={styles.statNumber}>
+                  {followers}{" "}
+                </ThemedText>
                 <ThemedText style={styles.stat}>followers</ThemedText>
               </View>
               <View>
-                <ThemedText type="subtitle" style={styles.statNumber}>{following} </ThemedText>
+                <ThemedText type="subtitle" style={styles.statNumber}>
+                  {following}{" "}
+                </ThemedText>
                 <ThemedText style={styles.stat}>suivi(e)s</ThemedText>
               </View>
             </View>
@@ -53,7 +58,9 @@ export default function UserProfileHeader({
       <ThemedText style={styles.bio}>{bio}</ThemedText>
       <ThemedText type="defaultSemiBold">
         Membre de{" "}
-        <ThemedText type="defaultSemiBold" style={styles.groupCount}>{groupCount} groupes</ThemedText>
+        <ThemedText type="defaultSemiBold" style={styles.groupCount}>
+          {groupCount} groupes
+        </ThemedText>
       </ThemedText>
     </View>
   );
@@ -63,15 +70,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 12,
   },
-  avatar: {
-    width: 110,
-    height: 110,
-    borderRadius: 60,
-    backgroundColor: "#ccc",
-  },
   infoContainer: {
     flex: 1,
-    justifyContent:"space-around",
+    justifyContent: "space-around",
   },
   topRow: {
     flexDirection: "row",

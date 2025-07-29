@@ -39,63 +39,81 @@ export default function Auth() {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
 
-  const url = Linking.useURL();
+  const url = Linking.useLinkingURL();
   useEffect(() => {
     if (url)
       createSessionFromUrl(url).catch((err) => setErrorMessage(err.message));
   }, [url]);
 
-  async function signInWithEmail() {
-    setLoading(true);
-    //ajouter si l'utilisateur est connecté rediriger vers la page d'accueil
-    const { data: { session }, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    if (error) {
-      Alert.alert("Erreur", error.message);
-      setLoading(false);
-      return;
-    }
-    if (session) {
+async function signInWithEmail() {
+  setLoading(true);
+  
+  const { data: { session }, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+  
+  if (error) {
+    Alert.alert("Erreur", error.message);
+    setLoading(false);
+    return;
+  }
+  
+  if (session) {
+    // Vérifier si le profil est complet
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("username")
+      .eq("id", session.user.id)
+      .single();
+    
+    if (profile?.username) {
+      // Profil complet, aller aux tabs
       router.push("/(tabs)");
     } else {
-      Alert.alert("Connexion réussie", "Bienvenue !");
+      // Profil incomplet, aller compléter
       router.push("/auth/CompleteProfile");
     }
-    setLoading(false);
   }
+  
+  setLoading(false);
+}
 
   const disabled = !email || password.length < 6;
 
-  async function signUpWithEmail() {
-    setLoading(true);
-    const {
-      data: { session },
-      error,
-    } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: `${redirectTo}/auth/Auth`,
-      },
-    });
-    if (error) Alert.alert("Erreur", error.message);
-    if (!session)
-      Alert.alert(
-        "Inscription réussie",
-        "Vérifie ta boîte mail pour confirmer ton adresse."
-      );
+ async function signUpWithEmail() {
+  setLoading(true);
+  const {
+    data: { session },
+    error,
+  } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      emailRedirectTo: `${redirectTo}/auth/Auth`,
+    },
+  });
+  
+  if (error) {
+    Alert.alert("Erreur", error.message);
     setLoading(false);
-    if (!session) {
-      Alert.alert(
-        "Inscription réussie",
-        "Vérifie ta boîte mail pour confirmer ton adresse."
-      );
-      router.push("/auth/CompleteProfile");
-    }
+    return;
   }
-
+  
+  if (!session) {
+    Alert.alert(
+      "Inscription réussie",
+      "Vérifie ta boîte mail pour confirmer ton adresse."
+    );
+    setLoading(false);
+    // Ne pas rediriger ici, attendre la confirmation email
+    return;
+  }
+  
+  // Si une session existe (cas rare), rediriger vers CompleteProfile
+  router.push("/auth/CompleteProfile");
+  setLoading(false);
+}
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : undefined}
