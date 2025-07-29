@@ -1,6 +1,7 @@
 import Avatar from "@/components/auth/Avatar";
 import { supabase } from "@/lib/supabaseClient";
 import { Button, Input } from "@rneui/themed";
+import { router } from "expo-router";
 import { useState } from "react";
 import { Alert, ScrollView, StyleSheet, View } from "react-native";
 
@@ -11,7 +12,9 @@ export default function CompleteProfile() {
 
   async function handleSubmit() {
     setLoading(true);
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
     if (!user) {
       Alert.alert("Erreur", "Utilisateur non connecté.");
@@ -29,7 +32,7 @@ export default function CompleteProfile() {
       Alert.alert("Erreur", error.message);
     } else {
       Alert.alert("Succès", "Profil complété !");
-      // Rediriger vers la page d'accueil ou dashboard
+      router.push("/(tabs)");
     }
 
     setLoading(false);
@@ -37,22 +40,26 @@ export default function CompleteProfile() {
 
   return (
     <View style={styles.container}>
-     <ScrollView>
-         <Avatar size={120} url={null} onUpload={(path) => setAvatarPath(path)} />
-      <Input
-        label="Pseudo"
-        value={pseudo}
-        onChangeText={setPseudo}
-        placeholder="Choisis ton pseudo"
-        containerStyle={{ marginTop: 20 }}
-      />
-      <Button
-        title="Terminer"
-        onPress={handleSubmit}
-        loading={loading}
-        disabled={loading || !pseudo}
-      />
-     </ScrollView>
+      <ScrollView>
+        <Avatar
+          size={120}
+          url={null}
+          onUpload={(path) => setAvatarPath(path)}
+        />
+        <Input
+          label="Pseudo"
+          value={pseudo}
+          onChangeText={setPseudo}
+          placeholder="Choisis ton pseudo"
+          containerStyle={{ marginTop: 20 }}
+        />
+        <Button
+          title="Terminer"
+          onPress={handleSubmit}
+          loading={loading}
+          disabled={loading || !pseudo}
+        />
+      </ScrollView>
     </View>
   );
 }
