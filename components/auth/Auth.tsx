@@ -1,8 +1,11 @@
 import { Colors } from "@/constants/Colors";
 import { supabase } from "@/lib/supabaseClient";
 import { Button, Input } from "@rneui/themed";
+import { makeRedirectUri } from "expo-auth-session";
+import * as QueryParams from "expo-auth-session/build/QueryParams";
+import * as Linking from "expo-linking";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     ActivityIndicator,
     Alert,
@@ -12,18 +15,54 @@ import {
     View,
 } from "react-native";
 
+const redirectTo = makeRedirectUri();
+
+const createSessionFromUrl = async (url: string) => {
+  const { params, errorCode } = QueryParams.getQueryParams(url);
+
+  if (errorCode) throw new Error(errorCode);
+  const { access_token, refresh_token } = params;
+
+  if (!access_token) return;
+
+  const { data, error } = await supabase.auth.setSession({
+    access_token,
+    refresh_token,
+  });
+  if (error) throw error;
+  return data.session;
+};
+
 export default function Auth() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  const url = Linking.useURL();
+  useEffect(() => {
+    if (url)
+      createSessionFromUrl(url).catch((err) => setErrorMessage(err.message));
+  }, [url]);
 
   async function signInWithEmail() {
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({
+    //ajouter si l'utilisateur est connecté rediriger vers la page d'accueil
+    const { data: { session }, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
-    if (error) Alert.alert("Erreur", error.message);
+    if (error) {
+      Alert.alert("Erreur", error.message);
+      setLoading(false);
+      return;
+    }
+    if (session) {
+      router.push("/(tabs)");
+    } else {
+      Alert.alert("Connexion réussie", "Bienvenue !");
+      router.push("/auth/CompleteProfile");
+    }
     setLoading(false);
   }
 
@@ -34,7 +73,13 @@ export default function Auth() {
     const {
       data: { session },
       error,
-    } = await supabase.auth.signUp({ email, password });
+    } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: `${redirectTo}/auth/Auth`,
+      },
+    });
     if (error) Alert.alert("Erreur", error.message);
     if (!session)
       Alert.alert(
@@ -47,7 +92,7 @@ export default function Auth() {
         "Inscription réussie",
         "Vérifie ta boîte mail pour confirmer ton adresse."
       );
-   router.push("/auth/CompleteProfile");
+      router.push("/auth/CompleteProfile");
     }
   }
 

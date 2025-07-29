@@ -9,15 +9,16 @@ import {
 } from "react-native";
 
 import { ThemedText } from "@/components/ThemedText";
+import Loading from "@/components/ui/Loading";
 import UserProfileHeader from "@/components/UserProfileHeader";
+import { useAuth } from "@/context/AuthContext";
 import { Button } from "@rneui/themed";
-import { Session } from "@supabase/supabase-js";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
 
-export default function Profile({ session }: { session: Session }) {
+export default function Profile() {
   const queryClient = useQueryClient();
-
+  const { session, user, isAuthenticated } = useAuth();
   const handleEditProfile = () => {
     console.log("Edit profile clicked");
     // Logique pour éditer le profil
@@ -97,26 +98,6 @@ export default function Profile({ session }: { session: Session }) {
 
   // Dans votre composant React Native
 
-  const handleAvatarUpload = async (newUrl: string) => {
-    try {
-      if (profile?.avatar_url) {
-        await deleteAvatar(profile.avatar_url); // Supprimer l'ancien avatar
-      }
-
-      await updateProfile({
-        username,
-        avatar_url: newUrl,
-      });
-
-      Alert.alert("Succès", "Votre photo de profil a été mise à jour !");
-    } catch (error: any) {
-      Alert.alert(
-        "Erreur",
-        error.message || "Impossible de mettre à jour l'avatar"
-      );
-    }
-  };
-
   const handleUpdateProfile = async () => {
     try {
       await updateProfile({
@@ -131,6 +112,15 @@ export default function Profile({ session }: { session: Session }) {
       );
     }
   };
+  if (!isAuthenticated) {
+    router.replace("/auth/Auth");
+    return null;
+  }
+    if (session === undefined) return <Loading />;
+  
+
+  if (!profile) return <Loading />;
+  
 
   return (
     <ScrollView>
@@ -143,7 +133,7 @@ export default function Profile({ session }: { session: Session }) {
         </ThemedText>
         <UserProfileHeader
           avatarUrl={profile?.avatar_url || ""}
-          username={username || "Mathie"}
+          username={user?.user_metadata?.username || "Mathie"}
           bio={profile?.bio || ""}
           followers={profile?.followers || 12}
           following={profile?.following || 1}
@@ -185,7 +175,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
   },
- 
+
   buttonText: {
     fontSize: 16,
     fontWeight: "600",
