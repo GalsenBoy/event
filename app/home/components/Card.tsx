@@ -1,12 +1,14 @@
 import { ThemedText } from "@/components/ThemedText";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { Colors } from "@/constants/Colors";
+import { Feather } from "@expo/vector-icons"; // ou Ionicons, FontAwesome etc.
+
 import { GlobalStyle } from "@/constants/GlobalStyle";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function CardHome() {
   return (
-    <View style={styles.container}>
+    <TouchableOpacity style={styles.container}>
       <View style={{ position: "relative" }}>
         <Image
           source={require("@/assets/images/biblio.jpg")}
@@ -18,8 +20,8 @@ export default function CardHome() {
           color={Colors.light.background}
           style={{ position: "absolute", top: 10, left: 15 }}
         />
-        <IconSymbol
-          name="shared.with.you"
+        <Feather
+          name="share-2"
           size={24}
           color={Colors.light.background}
           style={{ position: "absolute", top: 10, right: 15 }}
@@ -39,7 +41,7 @@ export default function CardHome() {
         </View>
         <View style={styles.flexRow}>
           <ThemedText>
-          <Text style={{color:Colors.light.icon}}>Par{" "}</Text>
+            <Text style={{ color: Colors.light.icon }}>Par </Text>
             <ThemedText type="defaultSemiBold" style={styles.pseudoUser}>
               @utilisateur
             </ThemedText>{" "}
@@ -53,13 +55,14 @@ export default function CardHome() {
           />
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginBottom: 20,
   },
   image: {
     width: "100%",
