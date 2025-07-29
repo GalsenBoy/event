@@ -1,0 +1,114 @@
+import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
+import { ThemedText } from "./ThemedText";
+
+export default function UserProfileHeader({
+  avatarUrl,
+  username,
+  bio,
+  followers,
+  following,
+  groupCount,
+  onEdit,
+  onShare,
+}: {
+  avatarUrl: string;
+  username: string;
+  bio: string;
+  followers: number;
+  following: number;
+  groupCount: number;
+  onEdit: () => void;
+  onShare: () => void;
+}) {
+  return (
+    <View>
+      <View style={styles.container}>
+        <Image source={{ uri: avatarUrl }} style={styles.avatar} />
+        <View style={styles.infoContainer}>
+          <ThemedText type="subtitle" >{username}</ThemedText>
+          <View style={styles.topRow}>
+            <View style={styles.stats}>
+              <View>
+                <ThemedText type="subtitle" style={styles.statNumber}>{followers} </ThemedText>
+                <ThemedText style={styles.stat}>followers</ThemedText>
+              </View>
+              <View>
+                <ThemedText type="subtitle" style={styles.statNumber}>{following} </ThemedText>
+                <ThemedText style={styles.stat}>suivi(e)s</ThemedText>
+              </View>
+            </View>
+            <View style={styles.topRow}>
+              <View style={styles.buttonGroup}>
+                <TouchableOpacity style={styles.button} onPress={onEdit}>
+                  <ThemedText style={styles.buttonText}>Modifier</ThemedText>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.button} onPress={onShare}>
+                  <ThemedText style={styles.buttonText}>Partager</ThemedText>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </View>
+      </View>
+      <ThemedText style={styles.bio}>{bio}</ThemedText>
+      <ThemedText type="defaultSemiBold">
+        Membre de{" "}
+        <ThemedText type="defaultSemiBold" style={styles.groupCount}>{groupCount} groupes</ThemedText>
+      </ThemedText>
+    </View>
+  );
+}
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    gap: 12,
+  },
+  avatar: {
+    width: 110,
+    height: 110,
+    borderRadius: 60,
+    backgroundColor: "#ccc",
+  },
+  infoContainer: {
+    flex: 1,
+    justifyContent:"space-around",
+  },
+  topRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  buttonGroup: {
+    gap: 8,
+  },
+  button: {
+    backgroundColor: "#f5c9b0",
+    paddingVertical: 4,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+  },
+  buttonText: {
+    fontSize: 13,
+    fontWeight: "600",
+    color: "#000",
+  },
+  stats: {
+    flexDirection: "row",
+    gap: 16,
+  },
+  stat: {
+    fontSize: 14,
+    color: "#444",
+  },
+  statNumber: {
+    textAlign: "center",
+  },
+  bio: {
+    fontSize: 14,
+    marginBottom: 4,
+    color: "#333",
+  },
+  groupCount: {
+    color: "blue",
+  },
+});

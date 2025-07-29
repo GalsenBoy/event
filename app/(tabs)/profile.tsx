@@ -8,19 +8,24 @@ import {
   View,
 } from "react-native";
 
-import Avatar from "@/components/auth/Avatar";
 import { ThemedText } from "@/components/ThemedText";
-import { Colors } from "@/constants/Colors";
-import { Ionicons } from "@expo/vector-icons";
-import { Button, Input } from "@rneui/themed";
+import UserProfileHeader from "@/components/UserProfileHeader";
+import { Button } from "@rneui/themed";
 import { Session } from "@supabase/supabase-js";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
 
 export default function Profile({ session }: { session: Session }) {
-
   const queryClient = useQueryClient();
-  
+
+  const handleEditProfile = () => {
+    console.log("Edit profile clicked");
+    // Logique pour éditer le profil
+  };
+  const handleShareProfile = () => {
+    console.log("Share profile clicked");
+    // Logique pour partager le profil
+  };
 
   // États locaux pour gérer les champs de saisie
   const [username, setUsername] = useState("");
@@ -33,7 +38,7 @@ export default function Profile({ session }: { session: Session }) {
 
       const { data, error, status } = await supabase
         .from("profiles")
-        .select(`username, avatar_url`)
+        .select(`username, avatar_url,id`)
         .eq("id", session.user.id)
         .single();
 
@@ -128,64 +133,39 @@ export default function Profile({ session }: { session: Session }) {
   };
 
   return (
-   
-  <ScrollView>
-    <KeyboardAvoidingView style={styles.container}>
-      <ThemedText
-        style={{ textAlign: "center", marginVertical: 24 }}
-        type="title"
-      >
-        Mon Compte
-      </ThemedText>
-
-      {/* Section haut du profil comme Instagram */}
-      <View style={styles.profileHeader}>
-        <Avatar
-          size={100}
-          url={profile?.avatar_url || ""}
-          onUpload={handleAvatarUpload}
+    <ScrollView>
+      <KeyboardAvoidingView style={styles.container}>
+        <ThemedText
+          style={{ textAlign: "center", marginVertical: 24 }}
+          type="title"
+        >
+          Mon Compte
+        </ThemedText>
+        <UserProfileHeader
+          avatarUrl={profile?.avatar_url || ""}
+          username={username || "Mathie"}
+          bio={profile?.bio || ""}
+          followers={profile?.followers || 12}
+          following={profile?.following || 1}
+          groupCount={profile?.groupCount || 3}
+          onEdit={handleEditProfile}
+          onShare={handleShareProfile}
         />
-        <View style={styles.profileInfo}>
-          <ThemedText style={styles.username}>
-            {username || "Pseudo"}
-          </ThemedText>
-          <ThemedText style={styles.email}>
-            {session?.user?.email}
-          </ThemedText>
+
+        <View style={styles.buttonContainer}>
+          <Button
+            title={
+              loadingProfile || updatingProfile
+                ? "Chargement..."
+                : "Mettre à jour"
+            }
+            onPress={handleUpdateProfile}
+            disabled={loadingProfile || updatingProfile}
+            titleStyle={styles.buttonText}
+          />
         </View>
-      </View>
-
-      {/* Formulaire de mise à jour */}
-      <View style={styles.inputContainer}>
-        <Input
-          label="Pseudo ou Kunya"
-          value={username}
-          leftIcon={
-            <Ionicons
-              name="person-outline"
-              size={24}
-              color={Colors.light.tint}
-            />
-          }
-          placeholder="'Imran"
-          onChangeText={setUsername}
-        />
-      </View>
-
-      <View style={styles.buttonContainer}>
-        <Button
-          title={
-            loadingProfile || updatingProfile
-              ? "Chargement..."
-              : "Mettre à jour"
-          }
-          onPress={handleUpdateProfile}
-          disabled={loadingProfile || updatingProfile}
-          titleStyle={styles.buttonText}
-        />
-      </View>
-    </KeyboardAvoidingView>
-  </ScrollView>
+      </KeyboardAvoidingView>
+    </ScrollView>
   );
 }
 
@@ -205,18 +185,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
   },
-  username: {
-    fontSize: 20,
-    fontWeight: "700",
-    marginBottom: 4,
-  },
-  email: {
-    fontSize: 14,
-    color: "#888",
-  },
-  inputContainer: {
-    marginBottom: 24,
-  },
+ 
   buttonText: {
     fontSize: 16,
     fontWeight: "600",
