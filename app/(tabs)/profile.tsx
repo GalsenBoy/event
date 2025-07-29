@@ -8,13 +8,13 @@ import {
   View,
 } from "react-native";
 
-import { ThemedText } from "@/components/ThemedText";
 import Loading from "@/components/ui/Loading";
 import UserProfileHeader from "@/components/UserProfileHeader";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@rneui/themed";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Profile() {
   const queryClient = useQueryClient();
@@ -123,17 +123,12 @@ export default function Profile() {
   
 
   return (
-    <ScrollView>
+  <SafeAreaView>
+      <ScrollView>
       <KeyboardAvoidingView style={styles.container}>
-        <ThemedText
-          style={{ textAlign: "center", marginVertical: 24 }}
-          type="title"
-        >
-          Mon Compte
-        </ThemedText>
         <UserProfileHeader
           avatarUrl={profile?.avatar_url || ""}
-          username={user?.user_metadata?.username || "Mathie"}
+          username={profile?.username || "Mathie"}
           bio={profile?.bio || ""}
           followers={profile?.followers || 12}
           following={profile?.following || 1}
@@ -154,8 +149,19 @@ export default function Profile() {
             titleStyle={styles.buttonText}
           />
         </View>
+        <View >
+          <Button
+            title="Déconnexion"
+            onPress={() => {
+              supabase.auth.signOut();
+              router.replace("/auth/Auth");
+            }}
+            titleStyle={styles.buttonText}
+          />
+        </View>
       </KeyboardAvoidingView>
     </ScrollView>
+  </SafeAreaView>
   );
 }
 
