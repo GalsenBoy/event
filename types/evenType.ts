@@ -1,0 +1,23 @@
+export type EventType =
+  | "anniversaire"
+  | "randonnée"
+  | "inauguration"
+  | "ventes enchères";
+
+export type Event = {
+  id: string;
+  name: string;
+  start_date: string;
+  end_date: string;
+  price?: string;
+  description?: string;
+  address_street: string;
+  address_postal: string;
+  address_city: string;
+  address_extra?: string;
+  visibility: "public" | "private";
+  type: EventType;
+  photo_url?: string;
+  created_at: string;
+  user_id: string;
+};

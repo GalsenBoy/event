@@ -1,3 +1,4 @@
+import { Colors } from "@/constants/Colors";
 import { supabase } from "@/lib/supabaseClient";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as ImagePicker from "expo-image-picker";
@@ -336,10 +337,9 @@ const uploadImageToSupabase = async (uri: string) => {
   );
 }
 
-// --- Styles ---
-const PRIMARY_COLOR = '#FF6347'; // Tomato
-const BORDER_COLOR = '#ddd';
 
+
+const BORDER_COLOR = '#ddd';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -401,8 +401,8 @@ const styles = StyleSheet.create({
     borderColor: BORDER_COLOR,
   },
   selectorButtonSelected: {
-    backgroundColor: PRIMARY_COLOR,
-    borderColor: PRIMARY_COLOR,
+    backgroundColor: Colors.light.tint,
+    borderColor: Colors.light.tint,
   },
   selectorButtonText: {
     color: '#333',
@@ -446,7 +446,7 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
   },
   submitButton: {
-    backgroundColor: PRIMARY_COLOR,
+    backgroundColor: Colors.light.tint,
     padding: 15,
     borderRadius: 8,
     alignItems: 'center',
