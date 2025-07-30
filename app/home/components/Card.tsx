@@ -35,7 +35,7 @@ export default function CardHome({ event }: { event?: Event }) {
               {event ? event.name : "Titre de l'événement"}
             </ThemedText>
             <ThemedText type="defaultSemiBold" style={styles.date}>
-              {event ? new Date(event.start_date).toLocaleDateString() : "01/01/2023"}
+              {event ? new Date(event.start_datetime).toLocaleDateString() : "01/01/2023"}
             </ThemedText>
           </View>
           <ThemedText type="defaultSemiBold">{event?.price} €</ThemedText>

@@ -7,8 +7,8 @@ export type EventType =
 export type Event = {
   id: string;
   name: string;
-  start_date: string;
-  end_date: string;
+  start_datetime: string;
+  end_datetime: string;
   price?: string;
   description?: string;
   address_street: string;
