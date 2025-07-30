@@ -35,16 +35,27 @@ export default function CardHome({ event }: { event?: Event }) {
               {event ? event.name : "Titre de l'événement"}
             </ThemedText>
             <ThemedText type="defaultSemiBold" style={styles.date}>
-              {event ? new Date(event.start_datetime).toLocaleDateString() : "01/01/2023"}
+              {event
+                ? new Intl.DateTimeFormat("fr-FR", {
+                    weekday: "short",
+                    day: "numeric",
+                    month: "long",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    timeZone: "Europe/Paris",
+                  }).format(new Date(event.start_datetime))
+                : "01/01/2023"}
             </ThemedText>
           </View>
-          <ThemedText type="defaultSemiBold">{event?.price} €</ThemedText>
+          <ThemedText type="defaultSemiBold">
+            {!event?.price ? "Gratuit" : `${event?.price} €`}
+          </ThemedText>
         </View>
         <View style={styles.flexRow}>
           <ThemedText>
             <Text style={{ color: Colors.light.icon }}>Par </Text>
             <ThemedText type="defaultSemiBold" style={styles.pseudoUser}>
-              @{event ? event.user_id : "matie"}
+               @{event?.profiles?.username ?? "inconnu"}
             </ThemedText>{" "}
             <ThemedText type="defaultSemiBold">0.8km</ThemedText>
           </ThemedText>

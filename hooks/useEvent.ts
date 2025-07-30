@@ -17,9 +17,8 @@ export const useEvents = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("event")
-        .select("*")        
+        .select("*, profiles(username) ") // jointure avec la table profiles
         .order("start_datetime", { ascending: true });
-
       if (error) throw error;
       return data;
     },
@@ -41,7 +40,11 @@ export const useEvents = () => {
   const deleteEvent = (id: string) => {
     Alert.alert("Supprimer", "Confirmer la suppression de l'événement ?", [
       { text: "Annuler", style: "cancel" },
-      { text: "Supprimer", onPress: () => deleteMutation.mutate(id), style: "destructive" },
+      {
+        text: "Supprimer",
+        onPress: () => deleteMutation.mutate(id),
+        style: "destructive",
+      },
     ]);
   };
 
