@@ -99,7 +99,7 @@ export default function Avatar({ url, size = 150, onUpload }: Props) {
     <View>
       {avatarUrl ? (
         <Image
-          source={{ uri: avatarUrl }}
+          source={{ uri: avatarUrl || require("@/assets/images/react-logo.png") }}
           accessibilityLabel="Avatar"
           style={[avatarSize, styles.avatar, styles.image]}
         />
