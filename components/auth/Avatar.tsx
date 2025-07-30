@@ -1,5 +1,4 @@
 import { supabase } from "@/lib/supabaseClient";
-import { Button } from "@rneui/themed";
 import * as ImagePicker from "expo-image-picker";
 import { useEffect, useState } from "react";
 import { Alert, Image, StyleSheet, View } from "react-native";
@@ -100,13 +99,15 @@ export default function Avatar({ url, size = 150, onUpload }: Props) {
     <View>
       {avatarUrl ? (
         <Image
-          source={{ uri: avatarUrl }}
+          source={{ uri: avatarUrl || require("@/assets/images/react-logo.png") }}
           accessibilityLabel="Avatar"
           style={[avatarSize, styles.avatar, styles.image]}
         />
       ) : (
         <View style={[avatarSize, styles.avatar, styles.noImage]} />
       )}
+
+      {/*
       <View>
         <Button
           title={
@@ -123,15 +124,17 @@ export default function Avatar({ url, size = 150, onUpload }: Props) {
           disabled={uploading}
         />
       </View>
+      */}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   avatar: {
-    borderRadius: 5,
-    overflow: "hidden",
-    maxWidth: "100%",
+   width: 110,
+    height: 110,
+    borderRadius: 60,
+    backgroundColor: "#ccc",
   },
   image: {
     objectFit: "cover",
