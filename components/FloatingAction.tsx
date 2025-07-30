@@ -1,4 +1,5 @@
 import { Colors } from "@/constants/Colors";
+import { router } from "expo-router";
 import React, { useState } from "react";
 import { Animated, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { IconSymbol } from "./ui/IconSymbol";
@@ -31,7 +32,7 @@ export default function FloatingActionMenu() {
       {/* Boutons visibles uniquement si menuVisible */}
       {menuVisible && (
         <Animated.View style={[styles.menu, menuStyle]}>
-          <TouchableOpacity style={styles.actionButton}>
+          <TouchableOpacity onPress={()=>router.push("/event/CreateEvent")} style={styles.actionButton}>
             <Text style={styles.text}>Créer un événement</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.actionButton}>
