@@ -4,9 +4,10 @@ import { Colors } from "@/constants/Colors";
 import { Feather } from "@expo/vector-icons"; // ou Ionicons, FontAwesome etc.
 
 import { GlobalStyle } from "@/constants/GlobalStyle";
+import { Event } from "@/types/evenType";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-export default function CardHome() {
+export default function CardHome({ event }: { event?: Event }) {
   return (
     <TouchableOpacity style={styles.container}>
       <View style={{ position: "relative" }}>
@@ -31,19 +32,30 @@ export default function CardHome() {
         <View style={[styles.flexRow, { marginTop: 7, marginBottom: 5 }]}>
           <View>
             <ThemedText type="defaultSemiBold">
-              Inauguration de la médiathèque
+              {event ? event.name : "Titre de l'événement"}
             </ThemedText>
             <ThemedText type="defaultSemiBold" style={styles.date}>
-              Vendredi 13 Septembre 19h35
+              {event
+                ? new Intl.DateTimeFormat("fr-FR", {
+                    weekday: "short",
+                    day: "numeric",
+                    month: "long",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    timeZone: "Europe/Paris",
+                  }).format(new Date(event.start_datetime))
+                : "01/01/2023"}
             </ThemedText>
           </View>
-          <ThemedText type="defaultSemiBold">9,99€</ThemedText>
+          <ThemedText type="defaultSemiBold">
+            {!event?.price ? "Gratuit" : `${event?.price} €`}
+          </ThemedText>
         </View>
         <View style={styles.flexRow}>
           <ThemedText>
             <Text style={{ color: Colors.light.icon }}>Par </Text>
             <ThemedText type="defaultSemiBold" style={styles.pseudoUser}>
-              @utilisateur
+               @{event?.profiles?.username ?? "inconnu"}
             </ThemedText>{" "}
             <ThemedText type="defaultSemiBold">0.8km</ThemedText>
           </ThemedText>
