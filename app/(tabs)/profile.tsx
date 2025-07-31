@@ -15,6 +15,7 @@ import { Button } from "@rneui/themed";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
+import EventsTabs from "../event/components/EventTabs";
 
 export default function Profile() {
   const queryClient = useQueryClient();
@@ -116,57 +117,57 @@ export default function Profile() {
     router.replace("/auth/Auth");
     return null;
   }
-    if (session === undefined) return <Loading />;
-  
+  if (session === undefined) return <Loading />;
 
   if (!profile) return <Loading />;
-  
 
   return (
-  <SafeAreaView>
+    <SafeAreaView>
       <ScrollView>
-      <KeyboardAvoidingView style={styles.container}>
-        <UserProfileHeader
-          avatarUrl={profile?.avatar_url || ""}
-          username={profile?.username || "Mathie"}
-          bio={profile?.bio || ""}
-          followers={profile?.followers || 12}
-          following={profile?.following || 1}
-          groupCount={profile?.groupCount || 3}
-          onEdit={handleEditProfile}
-          onShare={handleShareProfile}
-        />
+        <KeyboardAvoidingView style={styles.container}>
+          <UserProfileHeader
+            avatarUrl={profile?.avatar_url || ""}
+            username={profile?.username || "Mathie"}
+            bio={profile?.bio || ""}
+            followers={profile?.followers || 12}
+            following={profile?.following || 1}
+            groupCount={profile?.groupCount || 3}
+            onEdit={handleEditProfile}
+            onShare={handleShareProfile}
+          />
 
-        <View style={styles.buttonContainer}>
-          <Button
-            title={
-              loadingProfile || updatingProfile
-                ? "Chargement..."
-                : "Mettre à jour"
-            }
-            onPress={handleUpdateProfile}
-            disabled={loadingProfile || updatingProfile}
-            titleStyle={styles.buttonText}
-          />
-        </View>
-        <View >
-          <Button
-            title="Déconnexion"
-            onPress={() => {
-              supabase.auth.signOut();
-              router.replace("/auth/Auth");
-            }}
-            titleStyle={styles.buttonText}
-          />
-        </View>
-      </KeyboardAvoidingView>
-    </ScrollView>
-  </SafeAreaView>
+          <View style={styles.buttonContainer}>
+            <Button
+              title={
+                loadingProfile || updatingProfile
+                  ? "Chargement..."
+                  : "Mettre à jour"
+              }
+              onPress={handleUpdateProfile}
+              disabled={loadingProfile || updatingProfile}
+              titleStyle={styles.buttonText}
+            />
+          </View>
+          <View>
+            <Button
+              title="Déconnexion"
+              onPress={() => {
+                supabase.auth.signOut();
+                router.replace("/auth/Auth");
+              }}
+              titleStyle={styles.buttonText}
+            />
+          </View>
+          <EventsTabs />
+        </KeyboardAvoidingView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     marginTop: 12,
     marginBottom: 25,
     paddingHorizontal: 16,
