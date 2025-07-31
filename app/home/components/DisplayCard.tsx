@@ -1,5 +1,5 @@
 import Loading from "@/components/ui/Loading";
-import { useEvents } from "@/hooks/useEvent";
+import { useEvents } from "@/hooks/event/useEvent";
 import { FlatList, View } from "react-native";
 import CardHome from "./CardHome";
 

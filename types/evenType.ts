@@ -4,8 +4,7 @@ export type EventType =
   | "inauguration"
   | "ventes enchères";
 
-
-  export type Profiles = {
+export type Profiles = {
   id: string;
   username: string;
   email: string;
@@ -13,8 +12,12 @@ export type EventType =
   photo_url?: string;
   created_at: string;
   updated_at: string;
+};
 
-  }
+
+export type SavedEvent = Event & {
+  profiles: Profiles;
+};
 
 export type Event = {
   id: string;

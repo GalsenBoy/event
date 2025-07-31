@@ -8,7 +8,7 @@ import { useAuth } from "@/context/AuthContext";
 import {
   useIsEventSaved,
   useToggleSaveEvent
-} from "@/hooks/useSaveEvent";
+} from "@/hooks/event/useSaveEvent";
 import { Event } from "@/types/evenType";
 import { router } from "expo-router";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
