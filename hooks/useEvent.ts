@@ -17,10 +17,10 @@ export const useEvents = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("event")
-        .select("*, profiles(username) ") // jointure avec la table profiles
+        .select("name,price,start_datetime,user_id,id,profiles(username)") // jointure avec la table profiles
         .order("start_datetime", { ascending: true });
       if (error) throw error;
-      return data;
+      return data as Event[];
     },
   });
 

@@ -5,11 +5,13 @@ import { Feather } from "@expo/vector-icons"; // ou Ionicons, FontAwesome etc.
 
 import { GlobalStyle } from "@/constants/GlobalStyle";
 import { Event } from "@/types/evenType";
+import { router } from "expo-router";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+
 
 export default function CardHome({ event }: { event?: Event }) {
   return (
-    <TouchableOpacity style={styles.container}>
+    <TouchableOpacity  onPress={() => router.push(`/event/${event?.id}`)} style={styles.container}>
       <View style={{ position: "relative" }}>
         <Image
           source={require("@/assets/images/biblio.jpg")}
