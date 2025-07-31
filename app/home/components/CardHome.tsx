@@ -8,10 +8,12 @@ import { Event } from "@/types/evenType";
 import { router } from "expo-router";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-
 export default function CardHome({ event }: { event?: Event }) {
   return (
-    <TouchableOpacity  onPress={() => router.push(`/event/${event?.id}`)} style={styles.container}>
+    <TouchableOpacity
+      onPress={() => router.push(`/event/${event?.id}`)}
+      style={styles.container}
+    >
       <View style={{ position: "relative" }}>
         <Image
           source={require("@/assets/images/biblio.jpg")}
@@ -57,7 +59,7 @@ export default function CardHome({ event }: { event?: Event }) {
           <ThemedText>
             <Text style={{ color: Colors.light.icon }}>Par </Text>
             <ThemedText type="defaultSemiBold" style={styles.pseudoUser}>
-               @{event?.profiles?.username ?? "inconnu"}
+              @{event?.profiles?.username ?? "inconnu"}
             </ThemedText>{" "}
             <ThemedText type="defaultSemiBold">0.8km</ThemedText>
           </ThemedText>
@@ -75,7 +77,6 @@ export default function CardHome({ event }: { event?: Event }) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     marginBottom: 20,
   },
   image: {

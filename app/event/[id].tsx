@@ -1,5 +1,7 @@
 import { ThemedText } from "@/components/ThemedText";
 import Loading from "@/components/ui/Loading";
+import { Colors } from "@/constants/Colors";
+import { GlobalStyle } from "@/constants/GlobalStyle";
 import { useEventDetail } from "@/hooks/useEventDetail";
 import { useLocalSearchParams } from "expo-router";
 import { StyleSheet, View } from "react-native";
@@ -15,7 +17,27 @@ export default function DetailsEvent() {
   return (
     <View style={styles.container}>
       <CardHome event={event} />
-      <ThemedText>Details of event {eventId} </ThemedText>
+      <View style={styles.bar}></View>
+      <ThemedText type="defaultSemiBold">Infos</ThemedText>
+      <ThemedText>
+        {event.address_street}, {event.address_postal} {event.address_city}{" "}
+      </ThemedText>
+      <ThemedText>
+        Sauvegarder par{" "}
+        <ThemedText
+          style={{ color: Colors.customColor.blue }}
+          type="defaultSemiBold"
+        >
+          14 personnes
+        </ThemedText>
+      </ThemedText>
+      <ThemedText style={{ marginTop: 15 }} type="defaultSemiBold">
+        Description
+      </ThemedText>
+      <ThemedText>
+        {event.description || "Aucune description disponible."}
+      </ThemedText>
+      <View style={[styles.bar,{marginVertical:10}]}></View>
     </View>
   );
 }
@@ -23,5 +45,11 @@ export default function DetailsEvent() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 10,
+  },
+  bar: {
+    height: 5,
+    backgroundColor: "#ccc",
+    borderRadius: GlobalStyle.borderRadius.borderRadius,
   },
 });
