@@ -3,6 +3,7 @@ import Loading from "@/components/ui/Loading";
 import { Colors } from "@/constants/Colors";
 import { GlobalStyle } from "@/constants/GlobalStyle";
 import { useEventDetail } from "@/hooks/useEventDetail";
+import { useSavedCount } from "@/hooks/useSaveEvent";
 import { useLocalSearchParams } from "expo-router";
 import { StyleSheet, View } from "react-native";
 import CardHome from "../home/components/CardHome";
@@ -10,6 +11,8 @@ import CardHome from "../home/components/CardHome";
 export default function DetailsEvent() {
   const { id: eventId } = useLocalSearchParams<{ id: string }>();
   const { data: event, isLoading, isError } = useEventDetail(eventId);
+  const { data: savedCount } = useSavedCount(eventId ?? "");
+
 
   if (isLoading) return <Loading />;
   if (isError || !event) return <ThemedText>Erreur de chargement</ThemedText>;
@@ -28,7 +31,7 @@ export default function DetailsEvent() {
           style={{ color: Colors.customColor.blue }}
           type="defaultSemiBold"
         >
-          14 personnes
+          {savedCount ? `${savedCount} personnes` : "Aucune personne"}
         </ThemedText>
       </ThemedText>
       <ThemedText style={{ marginTop: 15 }} type="defaultSemiBold">

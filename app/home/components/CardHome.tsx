@@ -1,14 +1,22 @@
 import { ThemedText } from "@/components/ThemedText";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { Colors } from "@/constants/Colors";
-import { Feather } from "@expo/vector-icons"; // ou Ionicons, FontAwesome etc.
+import { Feather, Ionicons } from "@expo/vector-icons"; // ou Ionicons, FontAwesome etc.
 
 import { GlobalStyle } from "@/constants/GlobalStyle";
+import { useAuth } from "@/context/AuthContext";
+import {
+  useIsEventSaved,
+  useToggleSaveEvent
+} from "@/hooks/useSaveEvent";
 import { Event } from "@/types/evenType";
 import { router } from "expo-router";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function CardHome({ event }: { event?: Event }) {
+  const { user } = useAuth(); // dépend de ton système d'auth
+  const { data: isSaved } = useIsEventSaved(event?.id ?? "", user?.id ?? "");
+  const toggleSave = useToggleSaveEvent(event?.id ?? "", user?.id);
   return (
     <TouchableOpacity
       onPress={() => router.push(`/event/${event?.id}`)}
@@ -19,12 +27,17 @@ export default function CardHome({ event }: { event?: Event }) {
           source={require("@/assets/images/biblio.jpg")}
           style={styles.image}
         />
-        <IconSymbol
-          name="heart.fill"
-          size={24}
-          color={Colors.light.background}
-          style={{ position: "absolute", top: 10, left: 15 }}
-        />
+     
+          <Ionicons
+            name={isSaved ? "heart" : "heart-outline"}
+            size={28}
+            color={isSaved ? Colors.light.tint : Colors.light.background}
+            style={{ position: "absolute", top: 10, left: 15 }}
+             onPress={(e) => {
+            e.stopPropagation(), toggleSave.mutate(isSaved);
+          }}
+          />
+      
         <Feather
           name="share-2"
           size={24}
