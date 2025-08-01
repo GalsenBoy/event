@@ -11,6 +11,8 @@ import {
 import Loading from "@/components/ui/Loading";
 import UserProfileHeader from "@/components/UserProfileHeader";
 import { useAuth } from "@/context/AuthContext";
+import { useFollowersCount } from "@/hooks/useFollowersCount";
+import { useFollowingCount } from "@/hooks/useFollowingCount";
 import { Button } from "@rneui/themed";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
@@ -20,6 +22,8 @@ import EventsTabs from "../event/components/EventTabs";
 export default function Profile() {
   const queryClient = useQueryClient();
   const { user, isAuthenticated } = useAuth();
+  const { followersCount, isLoading } = useFollowersCount(user?.id);
+  const { followingCount } = useFollowingCount(user?.id);
   const handleEditProfile = () => {
     console.log("Edit profile clicked");
     // Logique pour éditer le profil
@@ -54,57 +58,7 @@ export default function Profile() {
     enabled: !!user?.id,
   });
 
-  const {
-    data: followersCount,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["followersCount", user?.id],
-    queryFn: async () => {
-      if (!user?.id) {
-        console.log("Pas d'user ID");
-        return 0;
-      }
-
-      // D'abord, récupérer toutes les données pour debug
-      const { data: allFollows, error: allError } = await supabase
-        .from("follows")
-        .select("*")
-        .eq("following_id", user.id);
-
-      if (allError) {
-        console.error("Erreur lors de la récupération:", allError);
-        return 0;
-      }
-
-      // Ensuite essayer avec count
-      const { count, error: countError } = await supabase
-        .from("follows")
-        .select("*", { count: "exact", head: true })
-        .eq("following_id", user.id);
-
-      if (countError) {
-        console.error("Erreur count:", countError);
-        // Fallback sur la longueur du tableau
-        return allFollows?.length ?? 0;
-      }
-      return count ?? 0;
-    },
-    enabled: !!user?.id,
-  });
-
-  const { data: followingCount } = useQuery({
-    queryKey: ["followingCount", user?.id],
-    queryFn: async () => {
-      const { count } = await supabase
-        .from("follows")
-        .select("*", { count: "exact", head: true })
-        .eq("follower_id", user?.id); // les gens qu’il suit
-
-      return count ?? 0;
-    },
-    enabled: !!user?.id,
-  });
+ 
 
   // Mutation pour la mise à jour du profil
   const { mutateAsync: updateProfile, isPending: updatingProfile } =
@@ -135,7 +89,7 @@ export default function Profile() {
       },
     });
 
-    //if (isLoading) return <Loading />;
+  //if (isLoading) return <Loading />;
 
   // Mutation pour supprimer l'ancien avatar
   const { mutateAsync: deleteAvatar } = useMutation({

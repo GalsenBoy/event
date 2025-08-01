@@ -8,6 +8,7 @@ export type Profiles = {
   id: string;
   username: string;
   email: string;
+  bio?:string
   full_name?: string;
   photo_url?: string;
   created_at: string;

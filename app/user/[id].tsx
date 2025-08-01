@@ -2,7 +2,9 @@ import { ThemedText } from "@/components/ThemedText";
 import Loading from "@/components/ui/Loading";
 import UserProfileHeader from "@/components/UserProfileHeader";
 import { useAuth } from "@/context/AuthContext";
-import { useFollow } from "@/hooks/useFollowStatus";
+import { useFollow } from "@/hooks/useFollow";
+import { useFollowersCount } from "@/hooks/useFollowersCount";
+import { useFollowingCount } from "@/hooks/useFollowingCount";
 import { supabase } from "@/lib/supabaseClient";
 import { useQuery } from "@tanstack/react-query";
 import { useLocalSearchParams } from "expo-router";
@@ -13,12 +15,16 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import getButtonAppearance from "./components/GetButtonAppearrance";
 
 export default function PublicProfile() {
   const { id: user_id } = useLocalSearchParams<{ id: string }>();
   const { user } = useAuth();
   if (!user_id) return <ThemedText>Utilisateur introuvable</ThemedText>;
-  const { isFollowing, toggleFollow, isLoading } = useFollow(user_id);
+  const { followersCount, isLoading } = useFollowersCount(user_id);
+  const { followingCount } = useFollowingCount(user_id);
+  const { isFollowing, toggleFollow } = useFollow(user_id);
+  const { text, style, textStyle } = getButtonAppearance(user_id);
 
   const handleEditProfile = () => {
     console.log("Edit profile clicked");
@@ -28,23 +34,6 @@ export default function PublicProfile() {
     console.log("Share profile clicked");
     // Logique pour partager le profil
   };
-
-  const getButtonAppearance = () => {
-    if (isFollowing) {
-      return {
-        text: "Abonné",
-        style: styles.unfollowButton,
-        textStyle: styles.unfollowButtonText,
-      };
-    }
-    return {
-      text: "Suivre",
-      style: styles.followButton,
-      textStyle: styles.followButtonText,
-    };
-  };
-
-  const { text, style, textStyle } = getButtonAppearance();
 
   const { data: profile, isLoading: loadingProfile } = useQuery({
     queryKey: ["userProfile", user_id],
@@ -71,8 +60,8 @@ export default function PublicProfile() {
         avatarUrl={profile?.avatar_url || ""}
         username={profile?.username || "Mathie"}
         bio={profile?.bio || ""}
-        followers={profile?.followers || 12}
-        following={profile?.following || 1}
+        followers={followersCount || 0}
+        following={followingCount || 0}
         groupCount={profile?.groupCount || 3}
         onEdit={handleEditProfile}
         onShare={handleShareProfile}
@@ -98,25 +87,8 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
   },
-  followButton: {
-    backgroundColor: "#007AFF", // Bleu
-  },
-  followButtonText: {
-    color: "#FFFFFF",
-    fontWeight: "bold",
-    fontSize: 16,
-  },
-  unfollowButton: {
-    backgroundColor: "#E5E5EA", // Gris clair
-    borderWidth: 1,
-    borderColor: "#D1D1D6",
-  },
-  unfollowButtonText: {
-    color: "#000000",
-    fontWeight: "bold",
-    fontSize: 16,
-  },
   buttonBase: {
+    marginTop: 15,
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 8,
