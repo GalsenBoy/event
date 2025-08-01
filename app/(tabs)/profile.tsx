@@ -22,7 +22,7 @@ import EventsTabs from "../event/components/EventTabs";
 export default function Profile() {
   const queryClient = useQueryClient();
   const { user, isAuthenticated } = useAuth();
-  const { followersCount, isLoading } = useFollowersCount(user?.id);
+  const { followersCount } = useFollowersCount(user?.id);
   const { followingCount } = useFollowingCount(user?.id);
   const handleEditProfile = () => {
     console.log("Edit profile clicked");

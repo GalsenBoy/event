@@ -49,7 +49,7 @@ export default function TabLayout() {
         options={{
           title: "Créer",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="plus.app.fill" color={color} />
+            <IconSymbol size={28} name="plus.circle.fill"  color={color} />
           ),
         }}
       />
