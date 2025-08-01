@@ -20,8 +20,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import EventsTabs from "../event/components/EventTabs";
 
 export default function Profile() {
-  const queryClient = useQueryClient();
   const { user, isAuthenticated } = useAuth();
+  const queryClient = useQueryClient();
+
   const { followersCount } = useFollowersCount(user?.id);
   const { followingCount } = useFollowingCount(user?.id);
   const handleEditProfile = () => {
@@ -44,7 +45,7 @@ export default function Profile() {
 
       const { data, error, status } = await supabase
         .from("profiles")
-        .select(`username, avatar_url,id`)
+        .select(`username, avatar_url, id, bio`)
         .eq("id", user.id)
         .single();
 
@@ -57,8 +58,6 @@ export default function Profile() {
     },
     enabled: !!user?.id,
   });
-
- 
 
   // Mutation pour la mise à jour du profil
   const { mutateAsync: updateProfile, isPending: updatingProfile } =
@@ -144,19 +143,7 @@ export default function Profile() {
             onEdit={handleEditProfile}
             onShare={handleShareProfile}
           />
-
-          <View style={styles.buttonContainer}>
-            <Button
-              title={
-                loadingProfile || updatingProfile
-                  ? "Chargement..."
-                  : "Mettre à jour"
-              }
-              onPress={handleUpdateProfile}
-              disabled={loadingProfile || updatingProfile}
-              titleStyle={styles.buttonText}
-            />
-          </View>
+          <EventsTabs />
           <View>
             <Button
               title="Déconnexion"
@@ -167,7 +154,6 @@ export default function Profile() {
               titleStyle={styles.buttonText}
             />
           </View>
-          <EventsTabs />
         </KeyboardAvoidingView>
       </ScrollView>
     </SafeAreaView>

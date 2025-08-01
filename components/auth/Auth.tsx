@@ -7,12 +7,12 @@ import * as Linking from "expo-linking";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
-    ActivityIndicator,
-    Alert,
-    KeyboardAvoidingView,
-    Platform,
-    StyleSheet,
-    View,
+  ActivityIndicator,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  View,
 } from "react-native";
 
 const redirectTo = makeRedirectUri();
@@ -179,7 +179,6 @@ async function signInWithEmail() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FAFAFA",
     paddingHorizontal: 20,
     justifyContent: "center",
   },

@@ -1,5 +1,7 @@
+import { ThemedText } from "@/components/ThemedText";
+import { Colors } from "@/constants/Colors";
 import { useState } from "react";
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import CreatedEvents from "./CreatedEvents";
 import SavedEvents from "./SavedEvents";
 
@@ -8,23 +10,22 @@ export default function EventsTabs() {
 
   return (
     <View style={{ flex: 1 }}>
-      {/* Onglets */}
       <View style={styles.tabs}>
         <TouchableOpacity
           style={[styles.tab, activeTab === "saved" && styles.activeTab]}
           onPress={() => setActiveTab("saved")}
         >
-          <Text style={[styles.tabText, activeTab === "saved" && styles.activeText]}>
+          <ThemedText style={[styles.tabText, activeTab === "saved" && styles.activeText]}>
             Événements sauvegardés
-          </Text>
+          </ThemedText>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.tab, activeTab === "created" && styles.activeTab]}
           onPress={() => setActiveTab("created")}
         >
-          <Text style={[styles.tabText, activeTab === "created" && styles.activeText]}>
+          <ThemedText style={[styles.tabText, activeTab === "created" && styles.activeText]}>
             Événements créés
-          </Text>
+          </ThemedText>
         </TouchableOpacity>
       </View>
 
@@ -39,8 +40,7 @@ const styles = StyleSheet.create({
   tabs: {
     flexDirection: "row",
     borderBottomWidth: 1,
-    borderColor: "#ccc",
-    backgroundColor: "#fff",
+    borderColor: Colors.light.icon,
   },
   tab: {
     flex: 1,
@@ -49,14 +49,14 @@ const styles = StyleSheet.create({
   },
   activeTab: {
     borderBottomWidth: 2,
-    borderColor: "#007bff",
+    borderColor: Colors.light.tint,
   },
   tabText: {
     fontSize: 14,
     color: "#888",
   },
   activeText: {
-    color: "#007bff",
+    color: Colors.light.tint,
     fontWeight: "bold",
   },
 });
