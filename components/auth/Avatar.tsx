@@ -1,15 +1,18 @@
 import { supabase } from "@/lib/supabaseClient";
+import { Feather } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { useEffect, useState } from "react";
-import { Alert, Image, StyleSheet, View } from "react-native";
+import { Alert, Image, StyleSheet, TouchableOpacity, View } from "react-native";
+import Loading from "../ui/Loading";
 
 interface Props {
   size: number;
   url: string | null;
   onUpload: (filePath: string) => void;
+  allowUpload?: boolean;
 }
 
-export default function Avatar({ url, size = 150, onUpload }: Props) {
+export default function Avatar({ url, size = 150, onUpload, allowUpload=false }: Props) {
   const [uploading, setUploading] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const avatarSize = { height: size, width: size };
@@ -99,39 +102,33 @@ export default function Avatar({ url, size = 150, onUpload }: Props) {
     <View>
       {avatarUrl ? (
         <Image
-          source={{ uri: avatarUrl || require("@/assets/images/react-logo.png") }}
+          source={{
+            uri: avatarUrl || require("@/assets/images/react-logo.png"),
+          }}
           accessibilityLabel="Avatar"
           style={[avatarSize, styles.avatar, styles.image]}
         />
       ) : (
-        <View style={[avatarSize, styles.avatar, styles.noImage]} />
+        <View style={[avatarSize, styles.avatar]} />
       )}
 
-      {/*
-      <View>
-        <Button
-          title={
-            uploading
-              ? ("authentification.loading")
-              : ("authentification.upload a photo (optional)")
-          }
-          buttonStyle={[
-            
-            { backgroundColor: "#5467bf", marginVertical: 15 },
-          ]}
-          titleStyle={styles.buttonText}
+      {uploading ? (
+        <Loading />
+      ) : allowUpload ? (
+        <TouchableOpacity
+          style={[styles.avatar, styles.image]}
           onPress={uploadAvatar}
-          disabled={uploading}
-        />
-      </View>
-      */}
+        >
+          <Feather name="camera" size={24} color="white" />
+        </TouchableOpacity>
+      ) : null}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   avatar: {
-   width: 110,
+    width: 110,
     height: 110,
     borderRadius: 60,
     backgroundColor: "#ccc",
@@ -139,16 +136,5 @@ const styles = StyleSheet.create({
   image: {
     objectFit: "cover",
     paddingTop: 0,
-  },
-  buttonText: {
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  noImage: {
-    backgroundColor: "#333",
-    borderWidth: 1,
-    borderStyle: "solid",
-    borderColor: "rgb(200, 200, 200)",
-    borderRadius: 5,
   },
 });
