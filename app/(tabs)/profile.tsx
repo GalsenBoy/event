@@ -19,7 +19,7 @@ import EventsTabs from "../event/components/EventTabs";
 
 export default function Profile() {
   const queryClient = useQueryClient();
-  const { session, user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const handleEditProfile = () => {
     console.log("Edit profile clicked");
     // Logique pour éditer le profil
@@ -34,14 +34,14 @@ export default function Profile() {
 
   // Récupération du profil
   const { data: profile, isLoading: loadingProfile } = useQuery({
-    queryKey: ["userProfile", session?.user?.id],
+    queryKey: ["userProfile", user?.id],
     queryFn: async () => {
-      if (!session?.user) throw new Error("No user on the session!");
+      if (!user) throw new Error("No user on the ");
 
       const { data, error, status } = await supabase
         .from("profiles")
         .select(`username, avatar_url,id`)
-        .eq("id", session.user.id)
+        .eq("id", user.id)
         .single();
 
       if (error && status !== 406) throw new Error(error.message);
@@ -51,7 +51,59 @@ export default function Profile() {
 
       return data || { username: "", avatar_url: "" };
     },
-    enabled: !!session?.user?.id,
+    enabled: !!user?.id,
+  });
+
+  const {
+    data: followersCount,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["followersCount", user?.id],
+    queryFn: async () => {
+      if (!user?.id) {
+        console.log("Pas d'user ID");
+        return 0;
+      }
+
+      // D'abord, récupérer toutes les données pour debug
+      const { data: allFollows, error: allError } = await supabase
+        .from("follows")
+        .select("*")
+        .eq("following_id", user.id);
+
+      if (allError) {
+        console.error("Erreur lors de la récupération:", allError);
+        return 0;
+      }
+
+      // Ensuite essayer avec count
+      const { count, error: countError } = await supabase
+        .from("follows")
+        .select("*", { count: "exact", head: true })
+        .eq("following_id", user.id);
+
+      if (countError) {
+        console.error("Erreur count:", countError);
+        // Fallback sur la longueur du tableau
+        return allFollows?.length ?? 0;
+      }
+      return count ?? 0;
+    },
+    enabled: !!user?.id,
+  });
+
+  const { data: followingCount } = useQuery({
+    queryKey: ["followingCount", user?.id],
+    queryFn: async () => {
+      const { count } = await supabase
+        .from("follows")
+        .select("*", { count: "exact", head: true })
+        .eq("follower_id", user?.id); // les gens qu’il suit
+
+      return count ?? 0;
+    },
+    enabled: !!user?.id,
   });
 
   // Mutation pour la mise à jour du profil
@@ -64,10 +116,10 @@ export default function Profile() {
         username: string;
         avatar_url: string;
       }) => {
-        if (!session?.user) throw new Error("No user on the session!");
+        if (!user) throw new Error("No user on the session!");
 
         const updates = {
-          id: session.user.id,
+          id: user.id,
           username,
           avatar_url,
           updated_at: new Date(),
@@ -78,10 +130,12 @@ export default function Profile() {
         if (error) throw new Error(error.message);
       },
       onSuccess: () => {
-        queryClient.invalidateQueries(["userProfile", session?.user?.id]);
+        queryClient.invalidateQueries(["userProfile", user?.id]);
         router.replace("/(tabs)");
       },
     });
+
+    //if (isLoading) return <Loading />;
 
   // Mutation pour supprimer l'ancien avatar
   const { mutateAsync: deleteAvatar } = useMutation({
@@ -117,7 +171,7 @@ export default function Profile() {
     router.replace("/auth/Auth");
     return null;
   }
-  if (session === undefined) return <Loading />;
+  if (user === undefined) return <Loading />;
 
   if (!profile) return <Loading />;
 
@@ -126,11 +180,12 @@ export default function Profile() {
       <ScrollView>
         <KeyboardAvoidingView style={styles.container}>
           <UserProfileHeader
+            action={true}
             avatarUrl={profile?.avatar_url || ""}
             username={profile?.username || "Mathie"}
             bio={profile?.bio || ""}
-            followers={profile?.followers || 12}
-            following={profile?.following || 1}
+            followers={followersCount || 0}
+            following={followingCount || 0}
             groupCount={profile?.groupCount || 3}
             onEdit={handleEditProfile}
             onShare={handleShareProfile}

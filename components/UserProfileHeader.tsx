@@ -9,6 +9,7 @@ export default function UserProfileHeader({
   followers,
   following,
   groupCount,
+  action,
   onEdit,
   onShare,
 }: {
@@ -18,8 +19,9 @@ export default function UserProfileHeader({
   followers: number;
   following: number;
   groupCount: number;
-  onEdit: () => void;
-  onShare: () => void;
+  action:boolean
+  onEdit?: () => void;
+  onShare?: () => void;
 }) {
   return (
     <View>
@@ -42,7 +44,7 @@ export default function UserProfileHeader({
                 <ThemedText style={styles.stat}>suivi(e)s</ThemedText>
               </View>
             </View>
-            <View style={styles.topRow}>
+            {action ? <View style={styles.topRow}>
               <View style={styles.buttonGroup}>
                 <TouchableOpacity style={styles.button} onPress={onEdit}>
                   <ThemedText style={styles.buttonText}>Modifier</ThemedText>
@@ -51,7 +53,7 @@ export default function UserProfileHeader({
                   <ThemedText style={styles.buttonText}>Partager</ThemedText>
                 </TouchableOpacity>
               </View>
-            </View>
+            </View>:""}
           </View>
         </View>
       </View>

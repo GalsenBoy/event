@@ -14,7 +14,7 @@ import { router } from "expo-router";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function CardHome({ event }: { event?: Event }) {
-  const { user } = useAuth(); // dépend de ton système d'auth
+  const { user } = useAuth();
   const { data: isSaved } = useIsEventSaved(event?.id ?? "", user?.id ?? "");
   const toggleSave = useToggleSaveEvent(event?.id ?? "", user?.id);
   return (
@@ -70,10 +70,16 @@ export default function CardHome({ event }: { event?: Event }) {
         <View style={styles.flexRow}>
           <ThemedText>
             <Text style={{ color: Colors.light.icon }}>Par </Text>
-            <ThemedText type="defaultSemiBold" style={styles.pseudoUser}>
-              @{event?.profiles?.username ?? "inconnu"}
-            </ThemedText>{" "}
-            <ThemedText type="defaultSemiBold">0.8km</ThemedText>
+            <ThemedText
+              style={styles.pseudoUser}
+              onPress={() => router.push(`/user/${event?.user_id}`)}
+              type="defaultSemiBold"
+            >
+              @{event?.profiles?.username ?? "inconnu"}{" "}
+            </ThemedText>
+            <ThemedText type="defaultSemiBold">
+              0.8km
+            </ThemedText>
           </ThemedText>
           <IconSymbol
             name="location"

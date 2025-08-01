@@ -29,7 +29,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Home",
+          title: "Accueil",
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="house" color={color} />
           ),
@@ -38,7 +38,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="maps"
         options={{
-          title: "Maps",
+          title: "Carte",
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="map" color={color} />
           ),
@@ -47,7 +47,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="createAction"
         options={{
-          title: "Create Action",
+          title: "Créer",
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="plus.app.fill" color={color} />
           ),
@@ -56,7 +56,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="messenger"
         options={{
-          title: "Messenger",
+          title: "Discussions",
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="message" color={color} />
           ),
@@ -65,7 +65,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="profile"
         options={{
-          title: "Profile",
+          title: "Profil",
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="person" color={color} />
           ),
