@@ -45,7 +45,7 @@ export default function PublicProfile() {
         .single();
 
       if (error && status !== 406) throw new Error(error.message);
-      return data || { username: "", avatar_url: "" };
+      return data || { username: "", avatar_url: "", bio: "" };
     },
     enabled: !!user_id,
   });
