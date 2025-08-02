@@ -1,21 +1,21 @@
 import { ThemedText } from "@/components/ThemedText";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabaseClient";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
 import {
-    ActivityIndicator,
-    FlatList,
-    Image,
-    Keyboard,
-    KeyboardAvoidingView,
-    Platform,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    TouchableWithoutFeedback,
-    View,
+  ActivityIndicator,
+  FlatList,
+  Image,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
 } from "react-native";
 
 // Définir les types pour les commentaires et les profils associés
@@ -32,7 +32,6 @@ type CommentWithProfile = {
 // Le composant principal pour la section des commentaires
 export default function CommentSection({ eventId }: { eventId: string }) {
   const { user } = useAuth();
-  const queryClient = useQueryClient();
   const [newComment, setNewComment] = useState("");
 
   // 1. Récupérer les commentaires
@@ -76,6 +75,7 @@ export default function CommentSection({ eventId }: { eventId: string }) {
       alert(`Erreur: ${error.message}`);
     },
   });
+  
 
   const handleAddComment = () => {
     if (newComment.trim()) {
@@ -97,6 +97,7 @@ export default function CommentSection({ eventId }: { eventId: string }) {
         <ThemedText style={styles.username}>
           {item.profiles?.username || "Utilisateur anonyme"}
         </ThemedText>
+        
         <ThemedText style={styles.commentText}>{item.content}</ThemedText>
       </View>
     </View>

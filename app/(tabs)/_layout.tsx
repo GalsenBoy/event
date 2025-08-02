@@ -3,12 +3,14 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 import TabBarBackground from "@/components/ui/TabBarBackground";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
+import useUserProfile from "@/hooks/useUserProfile";
 import { Tabs } from "expo-router";
 import React from "react";
-import { Platform } from "react-native";
+import { Image, Platform } from "react-native";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const { pathImage } = useUserProfile();
 
   return (
     <Tabs
@@ -67,7 +69,16 @@ export default function TabLayout() {
         options={{
           title: "Profil",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="person" color={color} />
+            <>
+              {Boolean(pathImage) ? (
+                <Image
+                  source={{ uri: pathImage }}
+                  style={{ width: 28, height: 28, borderRadius: 14 }}
+                />
+              ) : (
+                <IconSymbol size={28} name="person" color={color} />
+              )}
+            </>
           ),
         }}
       />
