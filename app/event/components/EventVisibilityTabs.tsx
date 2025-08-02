@@ -1,18 +1,18 @@
+import DisplayPrivateEvents from "@/app/home/components/DisplayPrivateEvents";
+import DisplayPublicEvents from "@/app/home/components/DisplayPublicEvents";
 import { ThemedText } from "@/components/ThemedText";
 import { Colors } from "@/constants/Colors";
 import { useState } from "react";
 import {
-  StyleSheet,
-  TouchableOpacity,
-  useColorScheme,
-  View
+    StyleSheet,
+    TouchableOpacity,
+    useColorScheme,
+    View
 } from "react-native";
-import CreatedEvents from "./CreatedEvents";
-import SavedEvents from "./SavedEvents";
 
 
 
-export default function EventsTabs() {
+export default function EventsVisibilityTabs() {
   const colorScheme = useColorScheme();
   const borderColor = colorScheme === "dark"
               ? { borderColor: Colors.dark.text }
@@ -42,7 +42,7 @@ export default function EventsTabs() {
               colorText,
             ]}
           >
-            Événements sauvegardés
+            Événements publics
           </ThemedText>
         </TouchableOpacity>
         <TouchableOpacity
@@ -60,14 +60,14 @@ export default function EventsTabs() {
               colorText,
             ]}
           >
-            Événements créés
+            Événements privés
           </ThemedText>
         </TouchableOpacity>
       </View>
 
       {/* Contenu selon l’onglet actif */}
-      <View style={{ flex:1,padding: 10 }}>
-        {activeTab === "saved" ? <SavedEvents /> : <CreatedEvents />}
+      <View style={{ flex: 1,padding: 10 }}>
+        {activeTab === "saved" ? <DisplayPublicEvents /> : <DisplayPrivateEvents />}
       </View>
     </View>
   );
