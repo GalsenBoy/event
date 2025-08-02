@@ -21,10 +21,7 @@ export default function CardHome({ event }: { event?: Event }) {
     <View style={styles.container}>
       <View style={{ position: "relative" }}>
         <TouchableOpacity onPress={() => router.push(`/event/${event?.id}`)}>
-          <Image
-            source={require("@/assets/images/biblio.jpg")}
-            style={styles.image}
-          />
+          <Image source={{ uri: event?.photo_url  }} style={styles.image} />
         </TouchableOpacity>
 
         <Ionicons
@@ -77,9 +74,7 @@ export default function CardHome({ event }: { event?: Event }) {
             >
               @{event?.profiles?.username ?? "inconnu"}{" "}
             </ThemedText>
-            <ThemedText type="defaultSemiBold">
-              0.8km
-            </ThemedText>
+            <ThemedText type="defaultSemiBold">0.8km</ThemedText>
           </ThemedText>
           <IconSymbol
             name="location"

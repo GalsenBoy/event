@@ -3,7 +3,7 @@ import { Event } from "@/types/evenType";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Alert } from "react-native";
 
-export const useEvents = () => {
+export const useEvents = (visibility: "public" | "private") => {
   const queryClient = useQueryClient();
 
   const {
@@ -18,6 +18,7 @@ export const useEvents = () => {
       const { data, error } = await supabase
         .from("event")
         .select("name,price,start_datetime,user_id,id,profiles(username)") // jointure avec la table profiles
+        .eq("visibility", visibility)
         .order("start_datetime", { ascending: true });
       if (error) throw error;
       return data as Event[];
