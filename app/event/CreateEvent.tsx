@@ -1,12 +1,15 @@
 import { Colors } from "@/constants/Colors";
 import { supabase } from "@/lib/supabaseClient";
 import { zodResolver } from "@hookform/resolvers/zod";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import * as ImagePicker from "expo-image-picker";
 import React, { useState } from "react";
+
 import { Controller, useForm } from "react-hook-form";
 import {
   ActivityIndicator,
   Image,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -222,30 +225,108 @@ const uploadImageToSupabase = async (uri: string) => {
       {errors.event_type && <Text style={styles.errorText}>{errors.event_type.message}</Text>}
 
       {/* --- Dates --- */}
-      <View style={styles.row}>
-        <View style={styles.halfWidth}>
-          <Text style={styles.label}>Date & Heure de début</Text>
-          <Controller
-            control={control}
-            name="start_datetime"
-            render={({ field: { onChange, value } }) => (
-              <TextInput style={styles.input} placeholder="AAAA-MM-JJTHH:MM" value={value} onChangeText={onChange} />
+    <View style={styles.row}>
+  {/* Date & Heure de début */}
+  <View style={styles.halfWidth}>
+    <Text style={styles.label}>Date & Heure de début</Text>
+    <Controller
+      control={control}
+      name="start_datetime"
+      render={({ field: { onChange, value } }) => {
+        const [showPickerStart, setShowPickerStart] = useState(false);
+        const displayStart = value
+          ? new Intl.DateTimeFormat("fr-FR", {
+              weekday: "short",
+              day: "numeric",
+              month: "long",
+              hour: "2-digit",
+              minute: "2-digit",
+              hour12: false,
+            }).format(new Date(value))
+          : "Choisir date et heure";
+
+        return (
+          <View>
+            <TouchableOpacity
+              style={styles.input}
+              onPress={() => setShowPickerStart(true)}
+            >
+              <Text>{displayStart}</Text>
+            </TouchableOpacity>
+
+            {showPickerStart && (
+              <DateTimePicker
+                value={value ? new Date(value) : new Date()}
+                mode="datetime"
+                display={Platform.OS === "ios" ? "inline" : "default"}
+                onChange={(event, selectedDate) => {
+                  setShowPickerStart(false);
+                  if (selectedDate) onChange(selectedDate.toISOString());
+                }}
+              />
             )}
-          />
-          {errors.start_datetime && <Text style={styles.errorText}>{errors.start_datetime.message}</Text>}
-        </View>
-        <View style={styles.halfWidth}>
-          <Text style={styles.label}>Date & Heure de fin</Text>
-          <Controller
-            control={control}
-            name="end_datetime"
-            render={({ field: { onChange, value } }) => (
-              <TextInput style={styles.input} placeholder="AAAA-MM-JJTHH:MM" value={value} onChangeText={onChange} />
+          </View>
+        );
+      }}
+    />
+    {errors.start_datetime && (
+      <Text style={styles.errorText}>
+        {errors.start_datetime.message}
+      </Text>
+    )}
+  </View>
+
+  {/* Date & Heure de fin */}
+  <View style={styles.halfWidth}>
+    <Text style={styles.label}>Date & Heure de fin</Text>
+    <Controller
+      control={control}
+      name="end_datetime"
+      render={({ field: { onChange, value } }) => {
+        const [showPickerEnd, setShowPickerEnd] = useState(false);
+        const displayEnd = value
+          ? new Intl.DateTimeFormat("fr-FR", {
+              weekday: "short",
+              day: "numeric",
+              month: "long",
+              hour: "2-digit",
+              minute: "2-digit",
+              hour12: false,
+            }).format(new Date(value))
+          : "Choisir date et heure";
+
+        return (
+          <View>
+            <TouchableOpacity
+              style={styles.input}
+              onPress={() => setShowPickerEnd(true)}
+            >
+              <Text>{displayEnd}</Text>
+            </TouchableOpacity>
+
+            {showPickerEnd && (
+              <DateTimePicker
+                value={value ? new Date(value) : new Date()}
+                mode="datetime"
+                display={Platform.OS === "ios" ? "inline" : "default"}
+                onChange={(event, selectedDate) => {
+                  setShowPickerEnd(false);
+                  if (selectedDate) onChange(selectedDate.toISOString());
+                }}
+              />
             )}
-          />
-           {errors.end_datetime && <Text style={styles.errorText}>{errors.end_datetime.message}</Text>}
-        </View>
-      </View>
+          </View>
+        );
+      }}
+    />
+    {errors.end_datetime && (
+      <Text style={styles.errorText}>
+        {errors.end_datetime.message}
+      </Text>
+    )}
+  </View>
+</View>
+
 
       {/* --- Adresse --- */}
       <Text style={styles.label}>Adresse</Text>
