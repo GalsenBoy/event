@@ -108,9 +108,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   bio: {
-    fontSize: 14,
-    marginBottom: 4,
-    color: "#333",
+   marginLeft:7
   },
   groupCount: {
     color: "blue",
