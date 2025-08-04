@@ -1,5 +1,6 @@
 import Avatar from "@/components/auth/Avatar";
 import { ThemedText } from "@/components/ThemedText";
+import { Colors } from "@/constants/Colors";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabaseClient";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -165,7 +166,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   sendButton: {
-    backgroundColor: "#FF6347",
+    backgroundColor: Colors.customColor.btnColor,
     borderRadius: 20,
     paddingVertical: 10,
     paddingHorizontal: 15,

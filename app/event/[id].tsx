@@ -5,7 +5,12 @@ import { GlobalStyle } from "@/constants/GlobalStyle";
 import { useEventDetail } from "@/hooks/event/useEventDetail";
 import { useSavedCount } from "@/hooks/event/useSaveEvent";
 import { useLocalSearchParams } from "expo-router";
-import { ScrollView, StyleSheet, View } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View
+} from "react-native";
 import CardHome from "../home/components/CardHome";
 import CommentSection from "./components/CommentSection";
 
@@ -21,6 +26,9 @@ export default function DetailsEvent() {
     <View style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <CardHome event={event} />
+        <TouchableOpacity style={styles.submitButton}>
+          <ThemedText type="defaultSemiBold">Ajouter au calendrier</ThemedText>
+        </TouchableOpacity>
         <View style={styles.bar}></View>
         <ThemedText type="defaultSemiBold">Infos</ThemedText>
         <ThemedText>
@@ -54,8 +62,17 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   bar: {
+    marginVertical:15,
     height: 5,
     backgroundColor: "#ccc",
     borderRadius: GlobalStyle.borderRadius.borderRadius,
+  },
+  submitButton: {
+    backgroundColor: Colors.customColor.btnColor,
+    padding: 10,
+    borderRadius: GlobalStyle.borderRadius.borderRadius,
+    width:200,
+    alignItems: "center",
+    marginBottom : 15,
   },
 });

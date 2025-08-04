@@ -1,3 +1,4 @@
+import { Colors } from "@/constants/Colors";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { ThemedText } from "./ThemedText";
 import Avatar from "./auth/Avatar";
@@ -85,7 +86,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   button: {
-    backgroundColor: "#f5c9b0",
+    backgroundColor: Colors.customColor.btnColor,
     paddingVertical: 4,
     paddingHorizontal: 12,
     borderRadius: 8,
