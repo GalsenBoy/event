@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 15,
   },
-  sendButtonText: { color: "#fff", fontWeight: "bold" },
+  sendButtonText: { fontWeight: "bold" },
   commentContainer: {
     flexDirection: "row",
     paddingVertical: 10,
