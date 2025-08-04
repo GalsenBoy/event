@@ -1,3 +1,4 @@
+import Avatar from "@/components/auth/Avatar";
 import { ThemedText } from "@/components/ThemedText";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabaseClient";
@@ -6,7 +7,6 @@ import React, { useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
-  Image,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
@@ -15,7 +15,7 @@ import {
   TextInput,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  View,
+  View
 } from "react-native";
 
 // Définir les types pour les commentaires et les profils associés
@@ -85,20 +85,13 @@ export default function CommentSection({ eventId }: { eventId: string }) {
 
   const renderComment = ({ item }: { item: CommentWithProfile }) => (
     <View style={styles.commentContainer}>
-      <Image
-        source={
-          item.profiles?.avatar_url
-            ? { uri: item.profiles.avatar_url }
-            : require("@/assets/images/biblio.jpg")
-        }
-        style={styles.avatar}
-      />
+     <Avatar size={40} url={item.profiles?.avatar_url}/>
       <View style={styles.commentContent}>
         <ThemedText style={styles.username}>
           {item.profiles?.username || "Utilisateur anonyme"}
         </ThemedText>
         
-        <ThemedText style={styles.commentText}>{item.content}</ThemedText>
+        <ThemedText >{item.content}</ThemedText>
       </View>
     </View>
   );
@@ -110,7 +103,6 @@ export default function CommentSection({ eventId }: { eventId: string }) {
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
-          {/* Champ de saisie */}
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.input}
@@ -186,9 +178,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#eee",
   },
-  avatar: { width: 40, height: 40, borderRadius: 20, marginRight: 10 },
-  commentContent: { flex: 1 },
-  username: { fontWeight: "bold", marginBottom: 3 },
-  commentText: {},
+  commentContent: { marginLeft:10},
+  username: { fontWeight: "bold", marginBottom: 3,fontSize:15,textTransform:"lowercase"},
   emptyText: { textAlign: "center", color: "#888", marginTop: 20 },
 });

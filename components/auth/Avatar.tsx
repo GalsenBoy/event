@@ -128,8 +128,6 @@ export default function Avatar({ url, size = 150, onUpload, allowUpload=false }:
 
 const styles = StyleSheet.create({
   avatar: {
-    width: 110,
-    height: 110,
     borderRadius: 60,
     backgroundColor: "#ccc",
   },
