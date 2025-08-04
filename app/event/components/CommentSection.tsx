@@ -138,6 +138,7 @@ export default function CommentSection({ eventId }: { eventId: string }) {
             <FlatList
               data={comments}
               renderItem={renderComment}
+              scrollEnabled={false} 
               keyExtractor={(item) => item.id}
               ListEmptyComponent={
                 <Text style={styles.emptyText}>
