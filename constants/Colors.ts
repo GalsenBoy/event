@@ -24,6 +24,7 @@ export const Colors = {
   },
   customColor:{
     blue:"#3366B3",
+    btnColor:"#F1AF7F"
   }
  
 };
