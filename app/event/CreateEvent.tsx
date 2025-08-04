@@ -1,4 +1,5 @@
 import { Colors } from "@/constants/Colors";
+import { formatDateTime } from "@/lib/formatDateTime";
 import { supabase } from "@/lib/supabaseClient";
 import { zodResolver } from "@hookform/resolvers/zod";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -9,7 +10,7 @@ import { Controller, useForm } from "react-hook-form";
 import {
   ActivityIndicator,
   Image,
-  Platform,
+  Modal,
   ScrollView,
   StyleSheet,
   Text,
@@ -26,12 +27,20 @@ const schema = z.object({
   start_datetime: z.string().min(1, "Date de début requise"),
   end_datetime: z.string().min(1, "Date de fin requise"),
   price: z.string().optional(),
-  description: z.string().min(10, "La description doit faire au moins 10 caractères").max(1000),
+  description: z
+    .string()
+    .min(10, "La description doit faire au moins 10 caractères")
+    .max(1000),
   address_street: z.string().min(1, "Rue requise"),
-  address_postal: z.string().min(5, "Code postal invalide").max(5, "Code postal invalide"),
+  address_postal: z
+    .string()
+    .min(5, "Code postal invalide")
+    .max(5, "Code postal invalide"),
   address_city: z.string().min(1, "Ville requise"),
   address_extra: z.string().optional(),
-  visibility: z.enum(["public", "private"], { required_error: "La visibilité est requise" }),
+  visibility: z.enum(["public", "private"], {
+    required_error: "La visibilité est requise",
+  }),
   event_type: z.enum(
     ["anniversaire", "randonnée", "inauguration", "ventes_enchères"],
     { required_error: "Le type d'événement est requis" }
@@ -42,7 +51,13 @@ const schema = z.object({
 type EventFormData = z.infer<typeof schema>;
 
 export default function CreateEventForm() {
-  const { control, handleSubmit, formState: { errors }, reset, watch } = useForm<EventFormData>({
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    reset,
+    watch,
+  } = useForm<EventFormData>({
     resolver: zodResolver(schema),
     defaultValues: {
       visibility: "public", // Valeur par défaut
@@ -51,6 +66,9 @@ export default function CreateEventForm() {
 
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [activePicker, setActivePicker] = useState<"start" | "end" | null>(
+    null
+  );
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -65,64 +83,67 @@ export default function CreateEventForm() {
     }
   };
 
-const uploadImageToSupabase = async (uri: string) => {
-  try {
-    // Vérifier que l'utilisateur est bien connecté
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
-      throw new Error("Utilisateur non authentifié");
-    }
+  const uploadImageToSupabase = async (uri: string) => {
+    try {
+      // Vérifier que l'utilisateur est bien connecté
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (!session) {
+        throw new Error("Utilisateur non authentifié");
+      }
 
-    // Étape 1 : Décoder l'URI pour éviter les problèmes de format de chemin
-    const decodedUri = decodeURIComponent(uri);
-    
-    // Étape 2 : Générer un nom de fichier unique avec l'ID utilisateur
-    const filename = `${session.user.id}/${uuid.v4()}.jpeg`;
-    
-    // Étape 3 : Lire le fichier comme ArrayBuffer (plus fiable que FormData)
-    const response = await fetch(decodedUri);
-    const arrayBuffer = await response.arrayBuffer();
-    
-    // Étape 4 : Uploader le fichier vers Supabase Storage
-    const { data, error } = await supabase.storage
-      .from('event')
-      .upload(filename, arrayBuffer, {
-        contentType: 'image/jpeg',
-        upsert: false // Éviter d'écraser un fichier existant
-      });
-    
-    if (error) {
-      console.error("Erreur Supabase Storage:", error);
-      throw error;
+      // Étape 1 : Décoder l'URI pour éviter les problèmes de format de chemin
+      const decodedUri = decodeURIComponent(uri);
+
+      // Étape 2 : Générer un nom de fichier unique avec l'ID utilisateur
+      const filename = `${session.user.id}/${uuid.v4()}.jpeg`;
+
+      // Étape 3 : Lire le fichier comme ArrayBuffer (plus fiable que FormData)
+      const response = await fetch(decodedUri);
+      const arrayBuffer = await response.arrayBuffer();
+
+      // Étape 4 : Uploader le fichier vers Supabase Storage
+      const { data, error } = await supabase.storage
+        .from("event")
+        .upload(filename, arrayBuffer, {
+          contentType: "image/jpeg",
+          upsert: false, // Éviter d'écraser un fichier existant
+        });
+
+      if (error) {
+        console.error("Erreur Supabase Storage:", error);
+        throw error;
+      }
+
+      // Étape 5 : Récupérer l'URL publique du fichier uploadé
+      const { data: publicUrlData } = supabase.storage
+        .from("event")
+        .getPublicUrl(filename);
+
+      return publicUrlData.publicUrl;
+    } catch (error) {
+      console.error("Erreur détaillée de l'upload: ", error);
+
+      // Messages d'erreur plus explicites
+      if (error.message?.includes("row-level security policy")) {
+        throw new Error("Permissions insuffisantes pour uploader le fichier");
+      } else if (error.message?.includes("not found")) {
+        throw new Error("Bucket de stockage non trouvé");
+      } else {
+        throw error;
+      }
     }
-    
-    // Étape 5 : Récupérer l'URL publique du fichier uploadé
-    const { data: publicUrlData } = supabase.storage
-      .from("event")
-      .getPublicUrl(filename);
-    
-    return publicUrlData.publicUrl;
-    
-  } catch (error) {
-    console.error("Erreur détaillée de l'upload: ", error);
-    
-    // Messages d'erreur plus explicites
-    if (error.message?.includes('row-level security policy')) {
-      throw new Error("Permissions insuffisantes pour uploader le fichier");
-    } else if (error.message?.includes('not found')) {
-      throw new Error("Bucket de stockage non trouvé");
-    } else {
-      throw error;
-    }
-  }
-};
- const onSubmit = async (formData: EventFormData) => {
+  };
+  const onSubmit = async (formData: EventFormData) => {
     if (isSubmitting) return;
     setIsSubmitting(true);
-    
+
     try {
       // 1. Récupérer l'utilisateur actuellement connecté
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) {
         throw new Error("Vous devez être connecté pour créer un événement.");
       }
@@ -146,7 +167,7 @@ const uploadImageToSupabase = async (uri: string) => {
       ]);
 
       if (error) throw new Error(error.message);
-      
+
       alert("Événement créé avec succès ! ✨");
       reset();
       setImageUri(null);
@@ -162,9 +183,12 @@ const uploadImageToSupabase = async (uri: string) => {
   const selectedEventType = watch("event_type");
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 50 }}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={{ paddingBottom: 50 }}
+    >
       <Text style={styles.header}>Créer un événement</Text>
-      
+
       {/* --- Champ Nom --- */}
       <Text style={styles.label}>Nom de l’événement</Text>
       <Controller
@@ -180,7 +204,9 @@ const uploadImageToSupabase = async (uri: string) => {
           />
         )}
       />
-      {errors.name && <Text style={styles.errorText}>{errors.name.message}</Text>}
+      {errors.name && (
+        <Text style={styles.errorText}>{errors.name.message}</Text>
+      )}
 
       {/* --- Champ Description --- */}
       <Text style={styles.label}>Description</Text>
@@ -199,7 +225,9 @@ const uploadImageToSupabase = async (uri: string) => {
           />
         )}
       />
-      {errors.description && <Text style={styles.errorText}>{errors.description.message}</Text>}
+      {errors.description && (
+        <Text style={styles.errorText}>{errors.description.message}</Text>
+      )}
 
       {/* --- Sélecteur de Type --- */}
       <Text style={styles.label}>Type d'événement</Text>
@@ -208,13 +236,27 @@ const uploadImageToSupabase = async (uri: string) => {
         name="event_type"
         render={({ field: { onChange } }) => (
           <View style={styles.selectorContainer}>
-            {["anniversaire", "randonnée", "inauguration", "ventes_enchères"].map((type) => (
+            {[
+              "anniversaire",
+              "randonnée",
+              "inauguration",
+              "ventes_enchères",
+            ].map((type) => (
               <TouchableOpacity
                 key={type}
                 onPress={() => onChange(type)}
-                style={[styles.selectorButton, selectedEventType === type && styles.selectorButtonSelected]}
+                style={[
+                  styles.selectorButton,
+                  selectedEventType === type && styles.selectorButtonSelected,
+                ]}
               >
-                <Text style={[styles.selectorButtonText, selectedEventType === type && styles.selectorButtonTextSelected]}>
+                <Text
+                  style={[
+                    styles.selectorButtonText,
+                    selectedEventType === type &&
+                      styles.selectorButtonTextSelected,
+                  ]}
+                >
                   {type.replace("_", " ")}
                 </Text>
               </TouchableOpacity>
@@ -222,111 +264,126 @@ const uploadImageToSupabase = async (uri: string) => {
           </View>
         )}
       />
-      {errors.event_type && <Text style={styles.errorText}>{errors.event_type.message}</Text>}
+      {errors.event_type && (
+        <Text style={styles.errorText}>{errors.event_type.message}</Text>
+      )}
 
       {/* --- Dates --- */}
-    <View style={styles.row}>
-  {/* Date & Heure de début */}
-  <View style={styles.halfWidth}>
-    <Text style={styles.label}>Date & Heure de début</Text>
-    <Controller
-      control={control}
-      name="start_datetime"
-      render={({ field: { onChange, value } }) => {
-        const [showPickerStart, setShowPickerStart] = useState(false);
-        const displayStart = value
-          ? new Intl.DateTimeFormat("fr-FR", {
-              weekday: "short",
-              day: "numeric",
-              month: "long",
-              hour: "2-digit",
-              minute: "2-digit",
-              hour12: false,
-            }).format(new Date(value))
-          : "Choisir date et heure";
+      {/* --- Dates --- */}
+      <View style={styles.row}>
+        {/* Date & Heure de début */}
+        <View style={styles.halfWidth}>
+          <Text style={styles.label}>Date & Heure de début</Text>
+          <Controller
+            control={control}
+            name="start_datetime"
+            render={({ field: { onChange, value } }) => (
+              <TouchableOpacity
+                style={styles.input}
+                onPress={() => setActivePicker("start")}
+              >
+                <Text style={value ? styles.dateText : styles.placeholderText}>
+                  {formatDateTime(value)}
+                </Text>
+              </TouchableOpacity>
+            )}
+          />
+          {errors.start_datetime && (
+            <Text style={styles.errorText}>
+              {errors.start_datetime.message}
+            </Text>
+          )}
+        </View>
 
-        return (
-          <View>
-            <TouchableOpacity
-              style={styles.input}
-              onPress={() => setShowPickerStart(true)}
-            >
-              <Text>{displayStart}</Text>
-            </TouchableOpacity>
+        {/* Date & Heure de fin */}
+        <View style={styles.halfWidth}>
+          <Text style={styles.label}>Date & Heure de fin</Text>
+          <Controller
+            control={control}
+            name="end_datetime"
+            render={({ field: { onChange, value } }) => (
+              <TouchableOpacity
+                style={styles.input}
+                onPress={() => setActivePicker("end")}
+              >
+                <Text style={value ? styles.dateText : styles.placeholderText}>
+                  {formatDateTime(value)}
+                </Text>
+              </TouchableOpacity>
+            )}
+          />
+          {errors.end_datetime && (
+            <Text style={styles.errorText}>{errors.end_datetime.message}</Text>
+          )}
+        </View>
+      </View>
 
-            {showPickerStart && (
-              <DateTimePicker
-                value={value ? new Date(value) : new Date()}
-                mode="datetime"
-                display={Platform.OS === "ios" ? "inline" : "default"}
-                onChange={(event, selectedDate) => {
-                  setShowPickerStart(false);
-                  if (selectedDate) onChange(selectedDate.toISOString());
-                }}
+      {/* Modal pour DateTimePicker */}
+      <Modal
+        visible={activePicker !== null}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setActivePicker(null)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>
+                {activePicker === "start" ? "Date de début" : "Date de fin"}
+              </Text>
+              <TouchableOpacity
+                style={styles.modalCloseButton}
+                onPress={() => setActivePicker(null)}
+              >
+                <Text style={styles.modalCloseText}>✕</Text>
+              </TouchableOpacity>
+            </View>
+
+            {activePicker === "start" && (
+              <Controller
+                control={control}
+                name="start_datetime"
+                render={({ field: { onChange, value } }) => (
+                  <DateTimePicker
+                    value={value ? new Date(value) : new Date()}
+                    mode="datetime"
+                    locale="fr-FR"
+                    display="spinner"
+                    onChange={(event, selectedDate) => {
+                      if (selectedDate) onChange(selectedDate.toISOString());
+                    }}
+                  />
+                )}
               />
             )}
-          </View>
-        );
-      }}
-    />
-    {errors.start_datetime && (
-      <Text style={styles.errorText}>
-        {errors.start_datetime.message}
-      </Text>
-    )}
-  </View>
 
-  {/* Date & Heure de fin */}
-  <View style={styles.halfWidth}>
-    <Text style={styles.label}>Date & Heure de fin</Text>
-    <Controller
-      control={control}
-      name="end_datetime"
-      render={({ field: { onChange, value } }) => {
-        const [showPickerEnd, setShowPickerEnd] = useState(false);
-        const displayEnd = value
-          ? new Intl.DateTimeFormat("fr-FR", {
-              weekday: "short",
-              day: "numeric",
-              month: "long",
-              hour: "2-digit",
-              minute: "2-digit",
-              hour12: false,
-            }).format(new Date(value))
-          : "Choisir date et heure";
-
-        return (
-          <View>
-            <TouchableOpacity
-              style={styles.input}
-              onPress={() => setShowPickerEnd(true)}
-            >
-              <Text>{displayEnd}</Text>
-            </TouchableOpacity>
-
-            {showPickerEnd && (
-              <DateTimePicker
-                value={value ? new Date(value) : new Date()}
-                mode="datetime"
-                display={Platform.OS === "ios" ? "inline" : "default"}
-                onChange={(event, selectedDate) => {
-                  setShowPickerEnd(false);
-                  if (selectedDate) onChange(selectedDate.toISOString());
-                }}
+            {activePicker === "end" && (
+              <Controller
+                control={control}
+                name="end_datetime"
+                render={({ field: { onChange, value } }) => (
+                  <DateTimePicker
+                    value={value ? new Date(value) : new Date()}
+                    mode="datetime"
+                    locale="fr-FR"
+                    display="spinner"
+                    onChange={(event, selectedDate) => {
+                      if (selectedDate) onChange(selectedDate.toISOString());
+                    }}
+                  />
+                )}
               />
             )}
-          </View>
-        );
-      }}
-    />
-    {errors.end_datetime && (
-      <Text style={styles.errorText}>
-        {errors.end_datetime.message}
-      </Text>
-    )}
-  </View>
-</View>
 
+            <TouchableOpacity
+              style={styles.modalConfirmButton}
+              onPress={() => setActivePicker(null)}
+            >
+              <Text style={styles.modalConfirmText}>Confirmer</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
 
       {/* --- Adresse --- */}
       <Text style={styles.label}>Adresse</Text>
@@ -334,68 +391,134 @@ const uploadImageToSupabase = async (uri: string) => {
         control={control}
         name="address_street"
         render={({ field: { onChange, value } }) => (
-          <TextInput style={styles.input} placeholder="N° et nom de la rue" value={value} onChangeText={onChange} />
+          <TextInput
+            style={styles.input}
+            placeholder="N° et nom de la rue"
+            value={value}
+            onChangeText={onChange}
+          />
         )}
       />
-       {errors.address_street && <Text style={styles.errorText}>{errors.address_street.message}</Text>}
+      {errors.address_street && (
+        <Text style={styles.errorText}>{errors.address_street.message}</Text>
+      )}
       <View style={styles.row}>
         <View style={styles.halfWidth}>
-           <Controller
+          <Controller
             control={control}
             name="address_postal"
             render={({ field: { onChange, value } }) => (
-              <TextInput style={styles.input} placeholder="Code Postal" value={value} onChangeText={onChange} keyboardType="number-pad" maxLength={5} />
+              <TextInput
+                style={styles.input}
+                placeholder="Code Postal"
+                value={value}
+                onChangeText={onChange}
+                keyboardType="number-pad"
+                maxLength={5}
+              />
             )}
           />
-           {errors.address_postal && <Text style={styles.errorText}>{errors.address_postal.message}</Text>}
+          {errors.address_postal && (
+            <Text style={styles.errorText}>
+              {errors.address_postal.message}
+            </Text>
+          )}
         </View>
         <View style={styles.halfWidth}>
-           <Controller
+          <Controller
             control={control}
             name="address_city"
             render={({ field: { onChange, value } }) => (
-              <TextInput style={styles.input} placeholder="Ville" value={value} onChangeText={onChange} />
+              <TextInput
+                style={styles.input}
+                placeholder="Ville"
+                value={value}
+                onChangeText={onChange}
+              />
             )}
           />
-           {errors.address_city && <Text style={styles.errorText}>{errors.address_city.message}</Text>}
+          {errors.address_city && (
+            <Text style={styles.errorText}>{errors.address_city.message}</Text>
+          )}
         </View>
       </View>
-       <Controller
+      <Controller
         control={control}
         name="address_extra"
         render={({ field: { onChange, value } }) => (
-          <TextInput style={styles.input} placeholder="Bâtiment, étage, etc. (optionnel)" value={value} onChangeText={onChange} />
+          <TextInput
+            style={styles.input}
+            placeholder="Bâtiment, étage, etc. (optionnel)"
+            value={value}
+            onChangeText={onChange}
+          />
         )}
       />
 
       {/* --- Prix & Visibilité --- */}
-       <View style={styles.row}>
+      <View style={styles.row}>
         <View style={styles.halfWidth}>
           <Text style={styles.label}>Tarif (€)</Text>
           <Controller
             control={control}
             name="price"
             render={({ field: { onChange, value } }) => (
-              <TextInput style={styles.input} placeholder="Gratuit si vide" value={value} onChangeText={onChange} keyboardType="numeric" />
+              <TextInput
+                style={styles.input}
+                placeholder="Gratuit si vide"
+                value={value}
+                onChangeText={onChange}
+                keyboardType="numeric"
+              />
             )}
           />
         </View>
         <View style={styles.halfWidth}>
-            <Text style={styles.label}>Visibilité</Text>
-             <Controller
-              control={control}
-              name="visibility"
-              render={({ field: { onChange } }) => (
-                <View style={styles.selectorContainerSmall}>
-                  <TouchableOpacity onPress={() => onChange("public")} style={[styles.selectorButtonSmall, selectedVisibility === 'public' && styles.selectorButtonSelected]}>
-                    <Text style={[styles.selectorButtonText, selectedVisibility === 'public' && styles.selectorButtonTextSelected]}>Public</Text>
-                  </TouchableOpacity>
-                   <TouchableOpacity onPress={() => onChange("private")} style={[styles.selectorButtonSmall, selectedVisibility === 'private' && styles.selectorButtonSelected]}>
-                    <Text style={[styles.selectorButtonText, selectedVisibility === 'private' && styles.selectorButtonTextSelected]}>Privé</Text>
-                  </TouchableOpacity>
-                </View>
-              )}
-            />
+          <Text style={styles.label}>Visibilité</Text>
+          <Controller
+            control={control}
+            name="visibility"
+            render={({ field: { onChange } }) => (
+              <View style={styles.selectorContainerSmall}>
+                <TouchableOpacity
+                  onPress={() => onChange("public")}
+                  style={[
+                    styles.selectorButtonSmall,
+                    selectedVisibility === "public" &&
+                      styles.selectorButtonSelected,
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.selectorButtonText,
+                      selectedVisibility === "public" &&
+                        styles.selectorButtonTextSelected,
+                    ]}
+                  >
+                    Public
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => onChange("private")}
+                  style={[
+                    styles.selectorButtonSmall,
+                    selectedVisibility === "private" &&
+                      styles.selectorButtonSelected,
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.selectorButtonText,
+                      selectedVisibility === "private" &&
+                        styles.selectorButtonTextSelected,
+                    ]}
+                  >
+                    Privé
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
+          />
         </View>
       </View>
 
@@ -404,10 +527,16 @@ const uploadImageToSupabase = async (uri: string) => {
       <TouchableOpacity style={styles.imagePicker} onPress={pickImage}>
         <Text style={styles.imagePickerText}>Choisir une image...</Text>
       </TouchableOpacity>
-      {imageUri && <Image source={{ uri: imageUri }} style={styles.imagePreview} />}
-      
+      {imageUri && (
+        <Image source={{ uri: imageUri }} style={styles.imagePreview} />
+      )}
+
       {/* --- Bouton de soumission --- */}
-      <TouchableOpacity style={styles.submitButton} onPress={handleSubmit(onSubmit)} disabled={isSubmitting}>
+      <TouchableOpacity
+        style={styles.submitButton}
+        onPress={handleSubmit(onSubmit)}
+        disabled={isSubmitting}
+      >
         {isSubmitting ? (
           <ActivityIndicator color="#fff" />
         ) : (
@@ -418,30 +547,28 @@ const uploadImageToSupabase = async (uri: string) => {
   );
 }
 
-
-
-const BORDER_COLOR = '#ddd';
+const BORDER_COLOR = "#ddd";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: "#f9f9f9",
   },
   header: {
     fontSize: 28,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 20,
-    textAlign: 'center',
-    color: '#333',
+    textAlign: "center",
+    color: "#333",
   },
   label: {
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: "500",
     marginBottom: 8,
-    color: '#555',
+    color: "#555",
   },
   input: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderWidth: 1,
     borderColor: BORDER_COLOR,
     borderRadius: 8,
@@ -452,24 +579,24 @@ const styles = StyleSheet.create({
   },
   textArea: {
     height: 100,
-    textAlignVertical: 'top',
+    textAlignVertical: "top",
   },
   errorText: {
-    color: 'red',
+    color: "red",
     fontSize: 12,
     marginBottom: 10,
   },
   row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     gap: 15,
   },
   halfWidth: {
     flex: 1,
   },
   selectorContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
     gap: 10,
     marginBottom: 15,
   },
@@ -477,7 +604,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 15,
     borderRadius: 20,
-    backgroundColor: '#eee',
+    backgroundColor: "#eee",
     borderWidth: 1,
     borderColor: BORDER_COLOR,
   },
@@ -486,56 +613,110 @@ const styles = StyleSheet.create({
     borderColor: Colors.light.tint,
   },
   selectorButtonText: {
-    color: '#333',
-    fontWeight: '500',
-    textTransform: 'capitalize',
+    color: "#333",
+    fontWeight: "500",
+    textTransform: "capitalize",
   },
   selectorButtonTextSelected: {
-    color: '#fff',
+    color: "#fff",
   },
   selectorContainerSmall: {
-     flexDirection: 'row',
-     height: 50,
-     gap: 10
+    flexDirection: "row",
+    height: 50,
+    gap: 10,
   },
   selectorButtonSmall: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     borderRadius: 8,
-    backgroundColor: '#eee',
+    backgroundColor: "#eee",
     borderWidth: 1,
-    borderColor: BORDER_COLOR
+    borderColor: BORDER_COLOR,
   },
   imagePicker: {
-    backgroundColor: '#eee',
+    backgroundColor: "#eee",
     borderWidth: 1,
     borderColor: BORDER_COLOR,
     borderRadius: 8,
     padding: 15,
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 15,
   },
   imagePickerText: {
-    color: '#555',
+    color: "#555",
   },
   imagePreview: {
-    width: '100%',
+    width: "100%",
     height: 200,
     borderRadius: 8,
     marginBottom: 20,
-    resizeMode: 'cover',
+    resizeMode: "cover",
   },
   submitButton: {
+    backgroundColor: Colors.light.tint,
+    padding: 15,
+    borderRadius: 8,
+    alignItems: "center",
+    marginTop: 20,
+  },
+  submitButtonText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  dateText: {
+    color: '#333',
+  },
+  placeholderText: {
+    color: '#999',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: Colors.light.icon,
+    borderRadius: 12,
+    padding: 20,
+    width: '90%',
+    maxWidth: 350,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  modalCloseButton: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: '#f0f0f0',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalCloseText: {
+    fontSize: 16,
+    color: '#666',
+  },
+  modalConfirmButton: {
     backgroundColor: Colors.light.tint,
     padding: 15,
     borderRadius: 8,
     alignItems: 'center',
     marginTop: 20,
   },
-  submitButtonText: {
+  modalConfirmText: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
   },
 });
