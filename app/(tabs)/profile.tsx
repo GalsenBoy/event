@@ -15,8 +15,8 @@ import {
   View
 } from "react-native";
 
+import UserProfileHeader from "@/app/user/components/UserProfileHeader";
 import Loading from "@/components/ui/Loading";
-import UserProfileHeader from "@/components/UserProfileHeader";
 import { Colors } from "@/constants/Colors";
 import { useAuth } from "@/context/AuthContext";
 import { useFollowersCount } from "@/hooks/useFollowersCount";

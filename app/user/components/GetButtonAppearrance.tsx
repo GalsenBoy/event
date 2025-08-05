@@ -20,7 +20,7 @@ export default function getButtonAppearance  (user_id: string) {
 
 const styles = StyleSheet.create({
   followButton: {
-    backgroundColor:Colors.light.tint
+    backgroundColor:Colors.customColor.blue
   },
   followButtonText: {
     color: "#FFFFFF",
