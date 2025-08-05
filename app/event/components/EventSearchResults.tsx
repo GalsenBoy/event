@@ -1,15 +1,8 @@
+import { Event } from "@/types/evenType";
 import { router } from "expo-router";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-// Assurez-vous que ce type correspond à la structure de vos données événement
-type Event = {
-  id: string;
-  name: string;
-  photo_url: string | null;
-  start_datetime: string;
-};
-
-export function EventSearchResultCard({ event }: { event: Event }) {
+export default function EventSearchResultCard({ event }: { event: Event }) {
   const eventDate = new Date(event.start_datetime).toLocaleDateString('fr-FR', {
     day: '2-digit',
     month: 'short',

@@ -17,9 +17,12 @@ export const useEvents = (visibility: "public" | "private") => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("event")
-        .select("name,price,start_datetime,photo_url,user_id,id,profiles(username)") 
+        .select(
+          "name,price,start_datetime,photo_url,user_id,id,profiles(username)"
+        )
         .eq("visibility", visibility)
-        .order("start_datetime", { ascending: true });
+        .order("start_datetime", { ascending: true })
+        .limit(7);
       if (error) throw error;
       return data as Event[];
     },
