@@ -59,7 +59,7 @@ export default function UserProfileHeader({
         </View>
       </View>
       <ThemedText style={styles.bio}>{bio}</ThemedText>
-      <ThemedText type="defaultSemiBold">
+      <ThemedText style={styles.bio} type="defaultSemiBold">
         Membre de{" "}
         <ThemedText type="defaultSemiBold" style={styles.groupCount}>
           {groupCount} groupes
@@ -108,9 +108,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   bio: {
-    fontSize: 14,
-    marginBottom: 4,
-    color: "#333",
+   marginLeft:7
   },
   groupCount: {
     color: "blue",

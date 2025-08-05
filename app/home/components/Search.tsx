@@ -1,59 +1,40 @@
-import { Colors } from "@/constants/Colors";
-import { GlobalStyle } from "@/constants/GlobalStyle";
-import { Feather } from '@expo/vector-icons';
-import { StyleSheet, TextInput, View } from "react-native";
+import React from 'react';
+import { StyleSheet, TextInput, View } from 'react-native';
 
-export default function Search() {
+interface SearchProps {
+  query: string;
+  onQueryChange: (query: string) => void;
+}
+
+export default function Search({ query, onQueryChange }: SearchProps) {
   return (
-    <View style={styles.container}>
-     <View style={styles.flexRow}>
-       <View style={styles.searchContainer}>
-        <Feather name="search" size={20} color={Colors.light.icon} style={styles.icon} />
-        <TextInput
-          placeholder="Chercher un événement, un groupe, un utilisateur..."
-          style={styles.input}
-        />
-      </View>
-       <Feather
-          name="filter"
-          size={20}
-          color={Colors.light.icon}
-          style={[styles.icon, styles.iconFilter]}
-        />
-     </View>
+    <View style={searchStyles.container}>
+      <TextInput
+        style={searchStyles.input}
+        placeholder="Rechercher..."
+        value={query}
+        onChangeText={onQueryChange}
+        clearButtonMode="always"
+        autoCapitalize="none"
+        autoCorrect={false}
+      />
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+const searchStyles = StyleSheet.create({
   container: {
-    marginBottom: 20,
-  },
-  searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderColor: 'gray',
-    borderWidth: 1,
-    borderRadius: GlobalStyle.borderRadius.borderRadius,
-    paddingHorizontal: 10,
-    height: 40,
-    flex: 1,
-    marginRight: 15,
-  },
-  icon: {
-    marginRight: 8,
-  },
-  iconFilter:{
-    backgroundColor: '#dcdcdc',
-    padding: 10,
-    borderRadius: 25,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    backgroundColor: '#f0f2f5',
   },
   input: {
-    flex: 1,
-  },
-  flexRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    height: 44,
+    paddingHorizontal: 16,
+    backgroundColor: 'white',
+    borderRadius: 22,
+    fontSize: 16,
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
   },
 });
