@@ -17,6 +17,7 @@ import {
 
 import Loading from "@/components/ui/Loading";
 import UserProfileHeader from "@/components/UserProfileHeader";
+import { Colors } from "@/constants/Colors";
 import { useAuth } from "@/context/AuthContext";
 import { useFollowersCount } from "@/hooks/useFollowersCount";
 import { useFollowingCount } from "@/hooks/useFollowingCount";
@@ -191,11 +192,13 @@ const handleSave = async () => {
 
             <View style={styles.modalButtons}>
               <Button
+              buttonStyle={styles.cancel}
+              titleStyle={{color:Colors.light.tint}}
                 title="Annuler"
                 onPress={() => setIsModalVisible(false)}
                 type="outline"
               />
-              <Button title="Sauvegarder" onPress={handleSave} loading={isUpdating} />
+              <Button buttonStyle={styles.save} title="Sauvegarder" onPress={handleSave} loading={isUpdating} />
             </View>
           </View>
         </KeyboardAvoidingView>
@@ -273,4 +276,12 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     marginTop: 20,
   },
+  cancel:{
+    borderColor:Colors.light.tint,
+      borderRadius:5
+  },
+  save:{
+    backgroundColor:Colors.customColor.blue,
+    borderRadius:5
+  }
 });
