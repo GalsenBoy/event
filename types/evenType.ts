@@ -33,7 +33,7 @@ export type Event = {
   address_city: string;
   address_extra?: string;
   visibility: "public" | "private";
-  type: EventType;
+  event_type: EventType;
   photo_url?: string;
   created_at: string;
   user_id: string;

@@ -1,6 +1,6 @@
+import UserProfileHeader from "@/app/user/components/UserProfileHeader";
 import { ThemedText } from "@/components/ThemedText";
 import Loading from "@/components/ui/Loading";
-import UserProfileHeader from "@/components/UserProfileHeader";
 import { useAuth } from "@/context/AuthContext";
 import { useFollow } from "@/hooks/useFollow";
 import { useFollowersCount } from "@/hooks/useFollowersCount";
@@ -25,15 +25,6 @@ export default function PublicProfile() {
   const { followingCount } = useFollowingCount(user_id);
   const { isFollowing, toggleFollow } = useFollow(user_id);
   const { text, style, textStyle } = getButtonAppearance(user_id);
-
-  const handleEditProfile = () => {
-    console.log("Edit profile clicked");
-    // Logique pour éditer le profil
-  };
-  const handleShareProfile = () => {
-    console.log("Share profile clicked");
-    // Logique pour partager le profil
-  };
 
   const { data: profile, isLoading: loadingProfile } = useQuery({
     queryKey: ["userProfile", user_id],
@@ -63,8 +54,6 @@ export default function PublicProfile() {
         followers={followersCount || 0}
         following={followingCount || 0}
         groupCount={profile?.groupCount || 3}
-        onEdit={handleEditProfile}
-        onShare={handleShareProfile}
       />
       {user?.id !== user_id && (
         <TouchableOpacity

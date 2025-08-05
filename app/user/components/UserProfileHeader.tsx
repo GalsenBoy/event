@@ -1,7 +1,7 @@
 import { Colors } from "@/constants/Colors";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
-import { ThemedText } from "./ThemedText";
-import Avatar from "./auth/Avatar";
+import { ThemedText } from "../../../components/ThemedText";
+import Avatar from "../../../components/auth/Avatar";
 
 export default function UserProfileHeader({
   avatarUrl,
