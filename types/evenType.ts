@@ -29,12 +29,11 @@ export type Event = {
   price?: string;
   description?: string;
   address_street: string;
-  event_type?:string;
   address_postal: string;
   address_city: string;
   address_extra?: string;
   visibility: "public" | "private";
-  type: EventType;
+  event_type: EventType;
   photo_url?: string;
   created_at: string;
   user_id: string;
