@@ -59,7 +59,7 @@ export default function UserProfileHeader({
         </View>
       </View>
       <ThemedText style={styles.bio}>{bio}</ThemedText>
-      <ThemedText type="defaultSemiBold">
+      <ThemedText style={styles.bio} type="defaultSemiBold">
         Membre de{" "}
         <ThemedText type="defaultSemiBold" style={styles.groupCount}>
           {groupCount} groupes

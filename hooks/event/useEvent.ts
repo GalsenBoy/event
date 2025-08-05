@@ -17,7 +17,7 @@ export const useEvents = (visibility: "public" | "private") => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("event")
-        .select("name,price,start_datetime,photo_url,user_id,id,profiles(username)") // jointure avec la table profiles
+        .select("name,price,start_datetime,photo_url,user_id,id,profiles(username)") 
         .eq("visibility", visibility)
         .order("start_datetime", { ascending: true });
       if (error) throw error;

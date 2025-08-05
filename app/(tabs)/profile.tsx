@@ -153,7 +153,6 @@ const handleSave = async () => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      {/* ===== MODALE D'ÉDITION ===== */}
       <Modal
         visible={isModalVisible}
         animationType="slide"
@@ -214,8 +213,8 @@ const handleSave = async () => {
             bio={profile.bio || ""}
             followers={followersCount || 0}
             following={followingCount || 0}
-            groupCount={0} // À remplacer par la vraie valeur
-            onEdit={openEditModal} // Connecter le bouton à la modale
+            groupCount={0} 
+            onEdit={openEditModal} 
             onShare={() => console.log("Partager")}
           />
           <EventsTabs />

@@ -67,7 +67,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="profile"
         options={{
-          title: Boolean(pathImage) ? " " : "P",
+          title: Boolean(pathImage) ? "" : "Profil",
           tabBarIcon: ({ color }) => (
             <>
               {Boolean(pathImage) ? (
