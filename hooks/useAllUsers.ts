@@ -1,5 +1,5 @@
 import { supabase } from "@/lib/supabaseClient";
-import { Event } from "@/types/evenType";
+import { Profiles } from "@/types/evenType";
 import { useQuery } from "@tanstack/react-query";
 
 export const useAllUsers = () => {
@@ -9,14 +9,14 @@ export const useAllUsers = () => {
     isError,
     error,
     refetch,
-  } = useQuery<Event[], Error>({
+  } = useQuery<Profiles[], Error>({
     queryKey: ["users"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("profiles")
-        .select("username") 
+        .select("*") 
       if (error) throw error;
-      return data as Event[];
+      return data as Profiles[];
     },
   });
 

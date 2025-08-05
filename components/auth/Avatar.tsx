@@ -8,7 +8,7 @@ import Loading from "../ui/Loading";
 interface Props {
   size: number;
   url: string | null;
-  onUpload: (filePath: string) => void;
+  onUpload?: (filePath: string) => void;
   allowUpload?: boolean;
 }
 
@@ -86,7 +86,9 @@ export default function Avatar({ url, size = 150, onUpload, allowUpload=false }:
 
       setAvatarUrl(image.uri);
 
-      onUpload(data.path);
+      if (onUpload) {
+        onUpload(data.path);
+      }
     } catch (error) {
       if (error instanceof Error) {
         Alert.alert(error.message);
