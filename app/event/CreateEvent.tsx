@@ -269,7 +269,6 @@ export default function CreateEventForm() {
       )}
 
       {/* --- Dates --- */}
-      {/* --- Dates --- */}
       <View style={styles.row}>
         {/* Date & Heure de début */}
         <View style={styles.halfWidth}>
@@ -348,7 +347,7 @@ export default function CreateEventForm() {
                     value={value ? new Date(value) : new Date()}
                     mode="datetime"
                     locale="fr-FR"
-                    display="spinner"
+                    display="default"
                     onChange={(event, selectedDate) => {
                       if (selectedDate) onChange(selectedDate.toISOString());
                     }}
@@ -366,7 +365,7 @@ export default function CreateEventForm() {
                     value={value ? new Date(value) : new Date()}
                     mode="datetime"
                     locale="fr-FR"
-                    display="spinner"
+                    display="default"
                     onChange={(event, selectedDate) => {
                       if (selectedDate) onChange(selectedDate.toISOString());
                     }}
@@ -678,7 +677,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalContent: {
-    backgroundColor: Colors.light.icon,
+    backgroundColor: "#dcdcdc",
     borderRadius: 12,
     padding: 20,
     width: '90%',
@@ -708,7 +707,7 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   modalConfirmButton: {
-    backgroundColor: Colors.light.tint,
+    backgroundColor: Colors.customColor.blue,
     padding: 15,
     borderRadius: 8,
     alignItems: 'center',
