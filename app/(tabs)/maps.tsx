@@ -1,11 +1,12 @@
 import * as Location from 'expo-location';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
-import MapView, { Region } from 'react-native-maps';
+import MapView, { Marker, Region } from 'react-native-maps';
 
 export default function App() {
   const [region, setRegion] = useState<Region | null>(null);
   const [loading, setLoading] = useState(true);
+  const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -18,6 +19,8 @@ export default function App() {
 
       const location = await Location.getCurrentPositionAsync({});
       const { latitude, longitude } = location.coords;
+
+      setUserLocation({ latitude, longitude });
 
       setRegion({
         latitude,
@@ -40,7 +43,15 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <MapView style={styles.map} region={region} />
+      <MapView style={styles.map} region={region}>
+        {userLocation && (
+          <Marker
+            coordinate={userLocation}
+            title="Vous êtes ici"
+            description="Position actuelle"
+          />
+        )}
+      </MapView>
     </View>
   );
 }
