@@ -1,23 +1,22 @@
+import Avatar from "@/components/auth/Avatar";
 import { ThemedText } from "@/components/ThemedText";
 import { useAuth } from "@/context/AuthContext";
 import { useConversations } from "@/hooks/message/useConversation";
 import { router } from "expo-router";
 import React from "react";
 import {
-    ActivityIndicator,
-    FlatList,
-    Image,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-
 export default function Messenger() {
   const { user } = useAuth();
-  const { data: conversations, isLoading } = useConversations(); 
+  const { data: conversations, isLoading } = useConversations();
 
   const renderConversation = ({ item }: { item: any }) => (
     <TouchableOpacity
@@ -32,10 +31,7 @@ export default function Messenger() {
         })
       }
     >
-      <Image
-        source={{ uri: item.other_user.avatar_url }}
-        style={styles.avatar}
-      />
+      <Avatar size={50} url={item.other_user.avatar_url} />
       <View style={styles.conversationContent}>
         <Text style={styles.username}>{item.other_user.username}</Text>
         <Text style={styles.lastMessage} numberOfLines={1}>
@@ -77,8 +73,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#f0f0f0",
   },
-  avatar: { width: 50, height: 50, borderRadius: 25, marginRight: 15 },
-  conversationContent: { flex: 1 },
+  conversationContent: { flex: 1, marginLeft: 15 },
   username: { fontWeight: "bold", fontSize: 16, marginBottom: 4 },
   lastMessage: { color: "#666" },
   emptyText: { textAlign: "center", marginTop: 50, color: "#888" },

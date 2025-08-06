@@ -27,7 +27,7 @@ export default function UserProfileHeader({
   return (
     <View>
       <View style={styles.container}>
-        <Avatar size={110} url={avatarUrl} onUpload={() => {}} />
+        <Avatar size={110} url={avatarUrl} />
         <View style={styles.infoContainer}>
           <ThemedText type="subtitle">{username}</ThemedText>
           <View style={styles.topRow}>
