@@ -202,8 +202,6 @@ const handleSave = async () => {
           </View>
         </KeyboardAvoidingView>
       </Modal>
-
-      {/* ===== AFFICHAGE DE LA PAGE DE PROFIL ===== */}
       <ScrollView>
         <View style={styles.container}>
           <UserProfileHeader
