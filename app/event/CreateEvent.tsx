@@ -16,7 +16,7 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import uuid from "react-native-uuid";
 import { z } from "zod";
@@ -39,11 +39,11 @@ const schema = z.object({
   address_city: z.string().min(1, "Ville requise"),
   address_extra: z.string().optional(),
   visibility: z.enum(["public", "private"], {
-    required_error: "La visibilité est requise",
+    error: "La visibilité est requise",
   }),
   event_type: z.enum(
     ["anniversaire", "randonnée", "inauguration", "ventes_enchères"],
-    { required_error: "Le type d'événement est requis" }
+    { error: "Le type d'événement est requis" }
   ),
 });
 
@@ -126,9 +126,10 @@ export default function CreateEventForm() {
       console.error("Erreur détaillée de l'upload: ", error);
 
       // Messages d'erreur plus explicites
-      if (error.message?.includes("row-level security policy")) {
+      const err = error as { message?: string };
+      if (err.message?.includes("row-level security policy")) {
         throw new Error("Permissions insuffisantes pour uploader le fichier");
-      } else if (error.message?.includes("not found")) {
+      } else if (err.message?.includes("not found")) {
         throw new Error("Bucket de stockage non trouvé");
       } else {
         throw error;
@@ -238,7 +239,6 @@ export default function CreateEventForm() {
             <Picker
               selectedValue={value}
               onValueChange={(itemValue) => onChange(itemValue)}
-              style={styles.picker}
             >
               <Picker.Item label="Sélectionnez un type..." value={undefined} />
               <Picker.Item label="Anniversaire" value="anniversaire" />
@@ -703,13 +703,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-   pickerContainer: {
+  pickerContainer: {
     backgroundColor: "#fff",
     borderWidth: 1,
     borderColor: BORDER_COLOR, // Assurez-vous que BORDER_COLOR est défini
     borderRadius: 8,
     marginBottom: 5,
-    justifyContent: 'center', // Important pour Android
+    justifyContent: "center", // Important pour Android
   },
-    
 });
