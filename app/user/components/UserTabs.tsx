@@ -1,3 +1,4 @@
+import Groups from "@/app/group/Groups";
 import { ThemedText } from "@/components/ThemedText";
 import { Colors } from "@/constants/Colors";
 import { useState } from "react";
@@ -25,7 +26,9 @@ export default function UserTabs({ id }: UserTabsProps) {
       ? { color: Colors.dark.text }
       : { color: Colors.light.text };
 
-  const [activeTab, setActiveTab] = useState<"saved" | "created">("saved");
+  const [activeTab, setActiveTab] = useState<"saved" | "created" | "groups">(
+    "saved"
+  );
 
   return (
     <View style={{ flex: 1 }}>
@@ -66,14 +69,33 @@ export default function UserTabs({ id }: UserTabsProps) {
             Événements créés
           </ThemedText>
         </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.tab,
+            activeTab === "groups" && styles.activeTab,
+            borderColor,
+          ]}
+          onPress={() => setActiveTab("groups")}
+        >
+          <ThemedText
+            style={[
+              styles.tabText,
+              activeTab === "groups" && styles.activeText,
+              colorText,
+            ]}
+          >
+            Groupes
+          </ThemedText>
+        </TouchableOpacity>
       </View>
 
-      {/* Contenu selon l’onglet actif */}
       <View style={{ flex: 1, padding: 10 }}>
         {activeTab === "saved" ? (
           <SavedUserEvents user_id={id} />
-        ) : (
+        ) : activeTab === "created" ? (
           <CreatedUserEvents user_id={id} />
+        ) : (
+          <Groups />
         )}
       </View>
     </View>
@@ -92,14 +114,12 @@ const styles = StyleSheet.create({
   },
   activeTab: {
     borderBottomWidth: 2,
-    //borderColor: colorScheme === "dark" ? Colors.dark.tint : Colors.light.tint,
   },
   tabText: {
     fontSize: 14,
     color: "#888",
   },
   activeText: {
-    //color: colorScheme === "dark" ? Colors.dark.text : Colors.light.text,
     fontWeight: "bold",
   },
 });
