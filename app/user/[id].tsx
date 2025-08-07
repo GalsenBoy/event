@@ -18,6 +18,7 @@ import {
   View,
 } from "react-native";
 import getButtonAppearance from "./components/GetButtonAppearrance";
+import UserTabs from "./components/UserTabs";
 
 export default function PublicProfile() {
   const { id: user_id } = useLocalSearchParams<{ id: string }>();
@@ -131,6 +132,7 @@ export default function PublicProfile() {
           </TouchableOpacity>
         </View>
       )}
+      <UserTabs id={user_id} />
     </View>
   );
 }
