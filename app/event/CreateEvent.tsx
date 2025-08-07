@@ -3,9 +3,9 @@ import { formatDateTime } from "@/lib/formatDateTime";
 import { supabase } from "@/lib/supabaseClient";
 import { zodResolver } from "@hookform/resolvers/zod";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { Picker } from "@react-native-picker/picker";
 import * as ImagePicker from "expo-image-picker";
 import React, { useState } from "react";
-
 import { Controller, useForm } from "react-hook-form";
 import {
   ActivityIndicator,
@@ -229,41 +229,26 @@ export default function CreateEventForm() {
         <Text style={styles.errorText}>{errors.description.message}</Text>
       )}
 
-      {/* --- Sélecteur de Type --- */}
       <Text style={styles.label}>Type d'événement</Text>
-      <Controller
-        control={control}
-        name="event_type"
-        render={({ field: { onChange } }) => (
-          <View style={styles.selectorContainer}>
-            {[
-              "anniversaire",
-              "randonnée",
-              "inauguration",
-              "ventes_enchères",
-            ].map((type) => (
-              <TouchableOpacity
-                key={type}
-                onPress={() => onChange(type)}
-                style={[
-                  styles.selectorButton,
-                  selectedEventType === type && styles.selectorButtonSelected,
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.selectorButtonText,
-                    selectedEventType === type &&
-                      styles.selectorButtonTextSelected,
-                  ]}
-                >
-                  {type.replace("_", " ")}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        )}
-      />
+      <View style={styles.pickerContainer}>
+        <Controller
+          control={control}
+          name="event_type"
+          render={({ field: { onChange, value } }) => (
+            <Picker
+              selectedValue={value}
+              onValueChange={(itemValue) => onChange(itemValue)}
+              style={styles.picker}
+            >
+              <Picker.Item label="Sélectionnez un type..." value={undefined} />
+              <Picker.Item label="Anniversaire" value="anniversaire" />
+              <Picker.Item label="Randonnée" value="randonnée" />
+              <Picker.Item label="Inauguration" value="inauguration" />
+              <Picker.Item label="Ventes Enchères" value="ventes_enchères" />
+            </Picker>
+          )}
+        />
+      </View>
       {errors.event_type && (
         <Text style={styles.errorText}>{errors.event_type.message}</Text>
       )}
@@ -665,57 +650,66 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   dateText: {
-    color: '#333',
+    color: "#333",
   },
   placeholderText: {
-    color: '#999',
+    color: "#999",
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
   },
   modalContent: {
     backgroundColor: "#dcdcdc",
     borderRadius: 12,
     padding: 20,
-    width: '90%',
+    width: "90%",
     maxWidth: 350,
   },
   modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 20,
   },
   modalTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: "bold",
+    color: "#333",
   },
   modalCloseButton: {
     width: 30,
     height: 30,
     borderRadius: 15,
-    backgroundColor: '#f0f0f0',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#f0f0f0",
+    justifyContent: "center",
+    alignItems: "center",
   },
   modalCloseText: {
     fontSize: 16,
-    color: '#666',
+    color: "#666",
   },
   modalConfirmButton: {
     backgroundColor: Colors.customColor.blue,
     padding: 15,
     borderRadius: 8,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 20,
   },
   modalConfirmText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
+   pickerContainer: {
+    backgroundColor: "#fff",
+    borderWidth: 1,
+    borderColor: BORDER_COLOR, // Assurez-vous que BORDER_COLOR est défini
+    borderRadius: 8,
+    marginBottom: 5,
+    justifyContent: 'center', // Important pour Android
+  },
+    
 });
