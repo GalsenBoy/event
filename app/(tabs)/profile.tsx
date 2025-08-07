@@ -1,6 +1,6 @@
 import { supabase } from "@/lib/supabaseClient";
 import * as ImagePicker from "expo-image-picker";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Alert,
   Image,
@@ -144,11 +144,11 @@ const handleSave = async () => {
 };
 
 
-  // --- Gestion des états de chargement et d'authentification ---
-  if (!isAuthenticated) {
-    router.replace("/auth/Auth");
-    return null; // ou un spinner
-  }
+  useEffect(() => {
+    if (!isAuthenticated) {
+      router.replace("/auth/Auth");
+    }
+  }, [isAuthenticated]);
   if (loadingProfile || !profile) return <Loading />;
 
   return (
