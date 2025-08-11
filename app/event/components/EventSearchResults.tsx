@@ -12,7 +12,7 @@ export default function EventSearchResultCard({ event }: { event: Event }) {
   return (
     <TouchableOpacity 
       style={eventCardStyles.container}
-      onPress={() => router.push(`/event/${event.id}`)} // Navigue vers les détails de l'événement
+      onPress={() => router.push(`/event/${event.id}`)}
     >
       <Image 
         source={event.photo_url ? { uri: event.photo_url } : require('@/assets/images/biblio.jpg')}
