@@ -21,7 +21,6 @@ import {
 import uuid from "react-native-uuid";
 import { z } from "zod";
 
-// Schéma Zod complet
 const schema = z.object({
   name: z.string().min(3, "Le nom doit faire au moins 3 caractères").max(100),
   start_datetime: z.string().min(1, "Date de début requise"),
@@ -47,7 +46,6 @@ const schema = z.object({
   ),
 });
 
-// Type pour les données du formulaire
 type EventFormData = z.infer<typeof schema>;
 
 export default function CreateEventForm() {
@@ -60,7 +58,7 @@ export default function CreateEventForm() {
   } = useForm<EventFormData>({
     resolver: zodResolver(schema),
     defaultValues: {
-      visibility: "public", // Valeur par défaut
+      visibility: "public", 
     },
   });
 
@@ -85,30 +83,24 @@ export default function CreateEventForm() {
 
   const uploadImageToSupabase = async (uri: string) => {
     try {
-      // Vérifier que l'utilisateur est bien connecté
       const {
         data: { session },
       } = await supabase.auth.getSession();
       if (!session) {
         throw new Error("Utilisateur non authentifié");
       }
-
-      // Étape 1 : Décoder l'URI pour éviter les problèmes de format de chemin
       const decodedUri = decodeURIComponent(uri);
 
-      // Étape 2 : Générer un nom de fichier unique avec l'ID utilisateur
       const filename = `${session.user.id}/${uuid.v4()}.jpeg`;
 
-      // Étape 3 : Lire le fichier comme ArrayBuffer (plus fiable que FormData)
       const response = await fetch(decodedUri);
       const arrayBuffer = await response.arrayBuffer();
 
-      // Étape 4 : Uploader le fichier vers Supabase Storage
       const { data, error } = await supabase.storage
         .from("event")
         .upload(filename, arrayBuffer, {
           contentType: "image/jpeg",
-          upsert: false, // Éviter d'écraser un fichier existant
+          upsert: false, 
         });
 
       if (error) {
@@ -116,7 +108,6 @@ export default function CreateEventForm() {
         throw error;
       }
 
-      // Étape 5 : Récupérer l'URL publique du fichier uploadé
       const { data: publicUrlData } = supabase.storage
         .from("event")
         .getPublicUrl(filename);
@@ -125,7 +116,6 @@ export default function CreateEventForm() {
     } catch (error) {
       console.error("Erreur détaillée de l'upload: ", error);
 
-      // Messages d'erreur plus explicites
       const err = error as { message?: string };
       if (err.message?.includes("row-level security policy")) {
         throw new Error("Permissions insuffisantes pour uploader le fichier");
@@ -141,7 +131,6 @@ export default function CreateEventForm() {
     setIsSubmitting(true);
 
     try {
-      // 1. Récupérer l'utilisateur actuellement connecté
       const {
         data: { user },
       } = await supabase.auth.getUser();
@@ -149,17 +138,14 @@ export default function CreateEventForm() {
         throw new Error("Vous devez être connecté pour créer un événement.");
       }
 
-      // 2. Gérer l'upload de l'image
       let photo_url: string | null = null;
       if (imageUri) {
         photo_url = await uploadImageToSupabase(imageUri);
       }
-
-      // 3. Insérer les données AVEC l'ID de l'utilisateur
       const { error } = await supabase.from("event").insert([
         {
           ...formData,
-          user_id: user.id, // <-- Ligne ajoutée !
+          user_id: user.id, 
           photo_url,
           price: formData.price || null,
           start_datetime: new Date(formData.start_datetime).toISOString(),
@@ -179,7 +165,6 @@ export default function CreateEventForm() {
       setIsSubmitting(false);
     }
   };
-  // Surveiller les valeurs pour mettre à jour l'UI des sélecteurs
   const selectedVisibility = watch("visibility");
   const selectedEventType = watch("event_type");
 
@@ -190,7 +175,6 @@ export default function CreateEventForm() {
     >
       <Text style={styles.header}>Créer un événement</Text>
 
-      {/* --- Champ Nom --- */}
       <Text style={styles.label}>Nom de l’événement</Text>
       <Controller
         control={control}
@@ -208,8 +192,6 @@ export default function CreateEventForm() {
       {errors.name && (
         <Text style={styles.errorText}>{errors.name.message}</Text>
       )}
-
-      {/* --- Champ Description --- */}
       <Text style={styles.label}>Description</Text>
       <Controller
         control={control}
@@ -253,9 +235,7 @@ export default function CreateEventForm() {
         <Text style={styles.errorText}>{errors.event_type.message}</Text>
       )}
 
-      {/* --- Dates --- */}
       <View style={styles.row}>
-        {/* Date & Heure de début */}
         <View style={styles.halfWidth}>
           <Text style={styles.label}>Date & Heure de début</Text>
           <Controller
@@ -279,7 +259,6 @@ export default function CreateEventForm() {
           )}
         </View>
 
-        {/* Date & Heure de fin */}
         <View style={styles.halfWidth}>
           <Text style={styles.label}>Date & Heure de fin</Text>
           <Controller
@@ -302,7 +281,6 @@ export default function CreateEventForm() {
         </View>
       </View>
 
-      {/* Modal pour DateTimePicker */}
       <Modal
         visible={activePicker !== null}
         transparent={true}
@@ -369,7 +347,6 @@ export default function CreateEventForm() {
         </View>
       </Modal>
 
-      {/* --- Adresse --- */}
       <Text style={styles.label}>Adresse</Text>
       <Controller
         control={control}
@@ -439,7 +416,6 @@ export default function CreateEventForm() {
         )}
       />
 
-      {/* --- Prix & Visibilité --- */}
       <View style={styles.row}>
         <View style={styles.halfWidth}>
           <Text style={styles.label}>Tarif (€)</Text>
@@ -506,7 +482,6 @@ export default function CreateEventForm() {
         </View>
       </View>
 
-      {/* --- Image Picker --- */}
       <Text style={styles.label}>Photo de l'événement</Text>
       <TouchableOpacity style={styles.imagePicker} onPress={pickImage}>
         <Text style={styles.imagePickerText}>Choisir une image...</Text>
@@ -515,7 +490,6 @@ export default function CreateEventForm() {
         <Image source={{ uri: imageUri }} style={styles.imagePreview} />
       )}
 
-      {/* --- Bouton de soumission --- */}
       <TouchableOpacity
         style={styles.submitButton}
         onPress={handleSubmit(onSubmit)}
@@ -706,9 +680,9 @@ const styles = StyleSheet.create({
   pickerContainer: {
     backgroundColor: "#fff",
     borderWidth: 1,
-    borderColor: BORDER_COLOR, // Assurez-vous que BORDER_COLOR est défini
+    borderColor: BORDER_COLOR, 
     borderRadius: 8,
     marginBottom: 5,
-    justifyContent: "center", // Important pour Android
+    justifyContent: "center", 
   },
 });

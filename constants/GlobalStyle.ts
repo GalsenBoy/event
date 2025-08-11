@@ -25,5 +25,4 @@ export const GlobalStyle = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 5,
     },
-  // Add more global styles as needed
 });
