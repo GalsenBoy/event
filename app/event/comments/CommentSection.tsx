@@ -1,8 +1,7 @@
-import Avatar from "@/components/auth/Avatar";
-import { ThemedText } from "@/components/ThemedText";
 import { Colors } from "@/constants/Colors";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabaseClient";
+import { CommentWithProfile } from "@/types/evenType";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
 import {
@@ -18,17 +17,8 @@ import {
   TouchableWithoutFeedback,
   View
 } from "react-native";
+import { renderComment } from "./RenderComment";
 
-// Définir les types pour les commentaires et les profils associés
-type CommentWithProfile = {
-  id: string;
-  content: string;
-  created_at: string;
-  profiles: {
-    username: string;
-    avatar_url: string | null;
-  } | null;
-};
 
 // Le composant principal pour la section des commentaires
 export default function CommentSection({ eventId }: { eventId: string }) {
@@ -83,19 +73,6 @@ export default function CommentSection({ eventId }: { eventId: string }) {
       addComment(newComment.trim());
     }
   };
-
-  const renderComment = ({ item }: { item: CommentWithProfile }) => (
-    <View style={styles.commentContainer}>
-     <Avatar size={40} url={item.profiles?.avatar_url}/>
-      <View style={styles.commentContent}>
-        <ThemedText style={styles.username}>
-          {item.profiles?.username || "Utilisateur anonyme"}
-        </ThemedText>
-        
-        <ThemedText >{item.content}</ThemedText>
-      </View>
-    </View>
-  );
 
   return (
     <KeyboardAvoidingView

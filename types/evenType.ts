@@ -16,6 +16,16 @@ export type Profiles = {
   updated_at: string;
 };
 
+export type CommentWithProfile = {
+  id: string;
+  content: string;
+  created_at: string;
+  profiles: {
+    username: string;
+    avatar_url: string | null;
+  } | null;
+};
+
 
 export type SavedEvent = Event & {
   profiles: Profiles;
