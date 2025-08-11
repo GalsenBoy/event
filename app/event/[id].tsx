@@ -8,7 +8,7 @@ import { addEventToCalendar } from "@/lib/addToCalendar";
 import { useLocalSearchParams } from "expo-router";
 import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import CardHome from "../home/components/CardHome";
-import CommentSection from "./components/CommentSection";
+import CommentSection from "./comments/CommentSection";
 
 export default function DetailsEvent() {
   const { id: eventId } = useLocalSearchParams<{ id: string }>();
