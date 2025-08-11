@@ -1,5 +1,5 @@
 import { supabase } from "@/lib/supabaseClient";
-import { Profiles } from "@/types/evenType";
+import { Profiles } from "@/types/eventType";
 import { useQuery } from "@tanstack/react-query";
 
 export const useAllUsers = () => {

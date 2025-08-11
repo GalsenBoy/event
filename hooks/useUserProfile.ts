@@ -4,8 +4,6 @@ import useAuthenticated from "./useAuthenticated";
 
 export default function useUserProfile() {
     const session = useAuthenticated();
-
-    // Récupérer le profil de l'utilisateur
     const { data: profile, isLoading: loadingProfile } = useQuery({
         queryKey: ["userProfile", session?.user?.id],
         queryFn: async () => {
@@ -23,10 +21,9 @@ export default function useUserProfile() {
 
             return data || { username: "", avatar_url: "" };
         },
-        enabled: !!session?.user?.id, // Active la requête uniquement si l'utilisateur est connecté
+        enabled: !!session?.user?.id, 
     });
 
-    // Télécharger l'image de l'avatar
     const { data: pathImage, isLoading: loadingImage } = useQuery({
         queryKey: ["avatarImage", profile?.avatar_url],
         queryFn: async () => {
@@ -48,7 +45,7 @@ export default function useUserProfile() {
                 fr.onerror = () => reject("Failed to read image data");
             });
         },
-        enabled: !!profile?.avatar_url, // Active la requête uniquement si l'URL de l'avatar existe
+        enabled: !!profile?.avatar_url, 
     });
 
     return {

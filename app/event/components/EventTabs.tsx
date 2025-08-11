@@ -64,8 +64,6 @@ export default function EventsTabs() {
           </ThemedText>
         </TouchableOpacity>
       </View>
-
-      {/* Contenu selon l’onglet actif */}
       <View style={{ flex:1,padding: 10 }}>
         {activeTab === "saved" ? <SavedEvents /> : <CreatedEvents />}
       </View>

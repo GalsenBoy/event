@@ -1,7 +1,9 @@
+import Avatar from "@/components/auth/Avatar";
+import { ThemedText } from "@/components/ThemedText";
 import { Colors } from "@/constants/Colors";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabaseClient";
-import { CommentWithProfile } from "@/types/evenType";
+import { CommentWithProfile } from "@/types/eventType";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
 import {
@@ -17,15 +19,12 @@ import {
   TouchableWithoutFeedback,
   View
 } from "react-native";
-import { renderComment } from "./RenderComment";
 
 
-// Le composant principal pour la section des commentaires
 export default function CommentSection({ eventId }: { eventId: string }) {
   const { user } = useAuth();
   const [newComment, setNewComment] = useState("");
 
-  // 1. Récupérer les commentaires
   const {
     data: comments,
     isLoading,
@@ -45,7 +44,6 @@ export default function CommentSection({ eventId }: { eventId: string }) {
     enabled: !!eventId,
   });
 
-  // 2. Mutation pour ajouter un commentaire
   const { mutate: addComment, isPending: isAddingComment } = useMutation({
     mutationFn: async (content: string) => {
       if (!user) throw new Error("Vous devez être connecté pour commenter.");
@@ -59,8 +57,8 @@ export default function CommentSection({ eventId }: { eventId: string }) {
       if (error) throw new Error(error.message);
     },
     onSuccess: async () => {
-      await refetch(); // <- rafraîchir les commentaires
-      setNewComment(""); // vider le champ
+      await refetch(); 
+      setNewComment("");
     },
     onError: (error) => {
       alert(`Erreur: ${error.message}`);
@@ -73,6 +71,19 @@ export default function CommentSection({ eventId }: { eventId: string }) {
       addComment(newComment.trim());
     }
   };
+
+  const renderComment = ({ item }: { item: CommentWithProfile }) => (
+    <View style={styles.commentContainer}>
+     <Avatar size={40} url={item.profiles?.avatar_url}/>
+      <View style={styles.commentContent}>
+        <ThemedText style={styles.username}>
+          {item.profiles?.username || "Utilisateur anonyme"}
+        </ThemedText>
+        
+        <ThemedText >{item.content}</ThemedText>
+      </View>
+    </View>
+  );
 
   return (
     <KeyboardAvoidingView

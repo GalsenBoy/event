@@ -2,7 +2,7 @@ import { Colors } from "@/constants/Colors";
 import { useFollow } from "@/hooks/useFollow";
 import { StyleSheet } from "react-native";
 
-export default function getButtonAppearance  (user_id: string) {
+export default function getButtonAppearance(user_id: string) {
   const { isFollowing } = useFollow(user_id);
   if (isFollowing) {
     return {
@@ -16,11 +16,11 @@ export default function getButtonAppearance  (user_id: string) {
     style: styles.followButton,
     textStyle: styles.followButtonText,
   };
-};
+}
 
 const styles = StyleSheet.create({
   followButton: {
-    backgroundColor:Colors.customColor.blue
+    backgroundColor: Colors.customColor.blue,
   },
   followButtonText: {
     color: "#FFFFFF",

@@ -1,5 +1,5 @@
 import { supabase } from "@/lib/supabaseClient";
-import { Event } from "@/types/evenType";
+import { Event } from "@/types/eventType";
 import { useQuery } from "@tanstack/react-query";
 
 export const useEventDetail = (eventId: string) => {
@@ -10,7 +10,7 @@ export const useEventDetail = (eventId: string) => {
         .from("event")
         .select("*, profiles(username, avatar_url)")
         .eq("id", eventId)
-        .single(); // 👈 pour un seul résultat
+        .single(); 
 
       if (error) throw error;
       return data;

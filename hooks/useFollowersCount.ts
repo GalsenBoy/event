@@ -1,5 +1,3 @@
-// hooks/user/useFollowersCount.ts
-
 import { supabase } from "@/lib/supabaseClient";
 import { useQuery } from "@tanstack/react-query";
 

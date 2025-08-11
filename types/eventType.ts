@@ -11,7 +11,6 @@ export type Profiles = {
   bio?:string
   avatar_url?:string;
   full_name?: string;
-  //photo_url?: string;
   created_at: string;
   updated_at: string;
 };

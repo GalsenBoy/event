@@ -29,10 +29,8 @@ export const useConversations = () => {
 
       if (error) throw error;
 
-      // Récupérer les informations des participants pour chaque conversation
       const conversationsWithProfiles = await Promise.all(
         (data || []).map(async (conversation) => {
-          // Trouver l'ID de l'autre participant (pas l'utilisateur actuel)
           const otherUserId = conversation.participant_ids?.find(id => id !== user.id);
           
           let otherUser = null;
@@ -46,7 +44,6 @@ export const useConversations = () => {
             otherUser = profileData;
           }
 
-          // Trouver le dernier message
           const lastMessage = conversation.messages?.[0] || null;
 
           return {
@@ -59,6 +56,6 @@ export const useConversations = () => {
 
       return conversationsWithProfiles;
     },
-    enabled: !!user?.id, // N'exécuter la query que si l'utilisateur est connecté
+    enabled: !!user?.id,
   });
 };

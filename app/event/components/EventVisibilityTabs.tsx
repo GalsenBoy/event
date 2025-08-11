@@ -4,10 +4,10 @@ import { ThemedText } from "@/components/ThemedText";
 import { Colors } from "@/constants/Colors";
 import { useState } from "react";
 import {
-    StyleSheet,
-    TouchableOpacity,
-    useColorScheme,
-    View
+  StyleSheet,
+  TouchableOpacity,
+  useColorScheme,
+  View
 } from "react-native";
 
 
@@ -65,7 +65,6 @@ export default function EventsVisibilityTabs() {
         </TouchableOpacity>
       </View>
 
-      {/* Contenu selon l’onglet actif */}
       <View style={{ flex: 1,padding: 10 }}>
         {activeTab === "saved" ? <DisplayPublicEvents /> : <DisplayPrivateEvents />}
       </View>

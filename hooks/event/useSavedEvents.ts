@@ -1,5 +1,5 @@
 import { supabase } from "@/lib/supabaseClient";
-import { SavedEvent } from "@/types/evenType";
+import { SavedEvent } from "@/types/eventType";
 import { useQuery } from "@tanstack/react-query";
 
 export function useSavedEvents(user_id:string) {

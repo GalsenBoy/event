@@ -3,7 +3,7 @@ import { Session } from "@supabase/supabase-js";
 import { useEffect, useState } from "react";
 
 export default function useAuthenticated() {
-  const [session, setSession] = useState<Session | null | undefined>(undefined); // undefined pour gérer le chargement
+  const [session, setSession] = useState<Session | null | undefined>(undefined); 
 
   useEffect(() => {
     const fetchSession = async () => {
@@ -15,9 +15,8 @@ export default function useAuthenticated() {
       setSession(data?.session || null);
     };
 
-    fetchSession(); // Charge la session au démarrage
+    fetchSession(); 
 
-    // Écoute les changements d'authentification
     const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
     });

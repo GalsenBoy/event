@@ -1,6 +1,6 @@
 import Avatar from "@/components/auth/Avatar";
 import { ThemedText } from "@/components/ThemedText";
-import { Profiles } from "@/types/evenType";
+import { Profiles } from "@/types/eventType";
 import { router } from "expo-router";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
