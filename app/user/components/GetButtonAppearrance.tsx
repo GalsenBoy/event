@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   unfollowButton: {
-    backgroundColor: "#E5E5EA", // Gris clair
+    backgroundColor: "#E5E5EA", 
     borderWidth: 1,
     borderColor: "#D1D1D6",
   },

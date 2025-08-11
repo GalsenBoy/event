@@ -1,8 +1,6 @@
 import { ThemedText } from "@/components/ThemedText";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { Colors } from "@/constants/Colors";
-import { Feather, Ionicons } from "@expo/vector-icons"; // ou Ionicons, FontAwesome etc.
-
 import { GlobalStyle } from "@/constants/GlobalStyle";
 import { useAuth } from "@/context/AuthContext";
 import {
@@ -10,6 +8,7 @@ import {
   useToggleSaveEvent,
 } from "@/hooks/event/useSaveEvent";
 import { Event } from "@/types/eventType";
+import { Feather, Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 

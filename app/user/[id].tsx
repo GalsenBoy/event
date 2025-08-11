@@ -53,23 +53,19 @@ export default function PublicProfile() {
     setIsCreatingChat(true);
 
     try {
-      // 1. Vérifier si une conversation existe déjà
       const { data: existingConversation, error: fetchError } = await supabase
         .from("conversations")
         .select("id")
         .contains("participant_ids", [user.id, user_id]);
 
-      // Gérer les erreurs potentielles, sauf si aucune ligne n'est trouvée
       if (fetchError) throw fetchError;
 
       if (existingConversation && existingConversation.length > 0) {
-        // 2a. Naviguer vers la conversation existante
         router.push({
           pathname: `/chat/${existingConversation[0].id}`,
           params: { recipientId: user_id, recipientName: profile.username },
         });
       } else {
-        // 2b. Créer une nouvelle conversation
         const { data: newConversation, error: createError } = await supabase
           .from("conversations")
           .insert({ participant_ids: [user.id, user_id] })
