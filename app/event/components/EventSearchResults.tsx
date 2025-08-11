@@ -1,4 +1,4 @@
-import { Event } from "@/types/evenType";
+import { Event } from "@/types/eventType";
 import { router } from "expo-router";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 

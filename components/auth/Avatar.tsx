@@ -105,7 +105,7 @@ export default function Avatar({ url, size = 150, onUpload, allowUpload=false }:
       {avatarUrl ? (
         <Image
           source={{
-            uri: avatarUrl || require("@/assets/images/react-logo.png"),
+            uri: avatarUrl || require("@/assets/images/biblio.jpg"),
           }}
           accessibilityLabel="Avatar"
           style={[avatarSize, styles.avatar, styles.image]}

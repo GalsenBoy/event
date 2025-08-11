@@ -1,5 +1,5 @@
 import { supabase } from "@/lib/supabaseClient";
-import { Event } from "@/types/evenType";
+import { Event } from "@/types/eventType";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Alert } from "react-native";
 

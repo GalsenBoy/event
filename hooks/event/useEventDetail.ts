@@ -1,5 +1,5 @@
 import { supabase } from "@/lib/supabaseClient";
-import { Event } from "@/types/evenType";
+import { Event } from "@/types/eventType";
 import { useQuery } from "@tanstack/react-query";
 
 export const useEventDetail = (eventId: string) => {
