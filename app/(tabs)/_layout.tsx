@@ -1,9 +1,9 @@
 import { HapticTab } from "@/components/HapticTab";
-import { IconSymbol } from "@/components/ui/IconSymbol";
 import TabBarBackground from "@/components/ui/TabBarBackground";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import useUserProfile from "@/hooks/useUserProfile";
+import { AntDesign, Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import React from "react";
 import { Image, Platform } from "react-native";
@@ -33,7 +33,7 @@ export default function TabLayout() {
         options={{
           title: "Accueil",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="house" color={color} />
+            <Ionicons size={24} name="home-outline" color={color} />
           ),
         }}
       />
@@ -42,7 +42,7 @@ export default function TabLayout() {
         options={{
           title: "Carte",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="map" color={color} />
+            <Ionicons size={24} name="map-outline" color={color} />
           ),
         }}
       />
@@ -51,7 +51,7 @@ export default function TabLayout() {
         options={{
           title: "Créer",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="plus.circle.fill"  color={color} />
+            <AntDesign size={24} name="pluscircle"  color={color} />
           ),
         }}
       />
@@ -60,7 +60,7 @@ export default function TabLayout() {
         options={{
           title: "Discussions",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="message" color={color} />
+            <Ionicons size={24} name="chatbubble-outline" color={color} />
           ),
         }}
       />
@@ -76,7 +76,7 @@ export default function TabLayout() {
                   style={{ width: 28, height: 28, borderRadius: 14 }}
                 />
               ) : (
-                <IconSymbol size={28} name="person" color={color} />
+                <Ionicons size={24} name="person-outline" color={color} />
               )}
             </>
           ),

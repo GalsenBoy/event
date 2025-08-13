@@ -137,7 +137,7 @@ export default function EventFilterModal({
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Filtres</Text>
           <TouchableOpacity onPress={handleReset}>
-            <Text style={styles.resetButton}>Reset</Text>
+            <Text style={styles.resetButton}>Réinitialiser</Text>
           </TouchableOpacity>
         </View>
 

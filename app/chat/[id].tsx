@@ -5,15 +5,16 @@ import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
 import {
-    ActivityIndicator,
-    StyleSheet as ChatStyleSheet,
-    Text as ChatText,
-    TouchableOpacity as ChatTouchableOpacity,
-    View as ChatView,
-    FlatList,
-    KeyboardAvoidingView,
-    Platform,
-    TextInput,
+  ActivityIndicator,
+  StyleSheet as ChatStyleSheet,
+  Text as ChatText,
+  TouchableOpacity as ChatTouchableOpacity,
+  View as ChatView,
+  FlatList,
+  KeyboardAvoidingView,
+  Platform,
+  TextInput,
+  useColorScheme,
 } from "react-native";
 import { SafeAreaView as ChatSafeAreaView } from "react-native-safe-area-context";
 
@@ -22,30 +23,30 @@ export default function ChatScreen() {
     id: string;
     recipientName: string;
   }>();
-  const { user } = useAuth(); 
-  const { data: messages, isLoading } = useMessages(conversationId); 
+  const { user } = useAuth();
+  const inpuBackground = useColorScheme() ===  "light" ? {backgroundColor:"#E3E3EA"} : {backgroundColor:"#252525"}
+  const { data: messages, isLoading } = useMessages(conversationId);
   const [inputText, setInputText] = useState("");
-  
-  // Utilisation correcte du hook
+
   const sendMessageMutation = useSendMessage();
 
   const handleSendMessage = async () => {
     if (!inputText.trim() || !conversationId || !user?.id) return;
-    
+
     try {
       await sendMessageMutation.mutateAsync({
         conversation_id: conversationId,
         sender_id: user.id,
         content: inputText.trim(),
       });
-      setInputText(""); // Vider l'input après envoi
+      setInputText("");
     } catch (error) {
       console.error("Erreur lors de l'envoi du message:", error);
     }
   };
 
   const renderMessage = ({ item }: { item: any }) => {
-    const isMyMessage = item.sender_id === user?.id 
+    const isMyMessage = item.sender_id === user?.id;
     return (
       <ChatView
         style={[
@@ -80,11 +81,11 @@ export default function ChatScreen() {
           renderItem={renderMessage}
           keyExtractor={(item) => item.id}
           style={chatStyles.messageList}
-          inverted // Affiche les messages du bas vers le haut
+          inverted
         />
         <ChatView style={chatStyles.inputContainer}>
           <TextInput
-            style={chatStyles.input}
+            style={[chatStyles.input,inpuBackground]}
             value={inputText}
             onChangeText={setInputText}
             placeholder={`Message à ${recipientName}...`}
@@ -94,7 +95,7 @@ export default function ChatScreen() {
           <ChatTouchableOpacity
             style={[
               chatStyles.sendButton,
-              { opacity: inputText.trim() ? 1 : 0.5 }
+              { opacity: inputText.trim() ? 1 : 0.5 },
             ]}
             onPress={handleSendMessage}
             disabled={!inputText.trim() || sendMessageMutation.isLoading}
@@ -111,7 +112,7 @@ export default function ChatScreen() {
   );
 }
 const chatStyles = ChatStyleSheet.create({
-  container: { flex: 1, backgroundColor: "#f0f2f5" },
+  container: { flex: 1 },
   messageList: { paddingHorizontal: 10 },
   messageBubble: {
     paddingVertical: 10,
@@ -136,12 +137,10 @@ const chatStyles = ChatStyleSheet.create({
     padding: 10,
     borderTopWidth: 1,
     borderTopColor: "#ddd",
-    backgroundColor: "#fff",
   },
   input: {
     flex: 1,
     height: 40,
-    backgroundColor: "#f0f2f5",
     borderRadius: 20,
     paddingHorizontal: 15,
   },

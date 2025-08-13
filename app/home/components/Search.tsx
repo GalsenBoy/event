@@ -1,5 +1,5 @@
 import { Colors } from "@/constants/Colors";
-import { Feather } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { StyleSheet, TextInput, View } from "react-native";
 
@@ -9,18 +9,20 @@ interface SearchProps {
 }
 
 export default function Search({ query, onQueryChange }: SearchProps) {
+  
   return (
     <View style={styles.flexRow}>
       <TextInput
         style={styles.input}
         placeholder="Chercher un event, un utilisateur..."
+        placeholderTextColor={"#888"}
         value={query}
         onChangeText={onQueryChange}
         clearButtonMode="always"
         autoCapitalize="none"
         autoCorrect={false}
       />
-      <Feather
+      <Ionicons
         name="filter"
         size={20}
         color={Colors.light.icon}

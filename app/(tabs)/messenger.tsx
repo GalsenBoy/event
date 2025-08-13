@@ -1,6 +1,6 @@
 import Avatar from "@/components/auth/Avatar";
 import { ThemedText } from "@/components/ThemedText";
-import { useAuth } from "@/context/AuthContext";
+import { Colors } from "@/constants/Colors";
 import { useConversations } from "@/hooks/message/useConversation";
 import { router } from "expo-router";
 import React from "react";
@@ -15,9 +15,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Messenger() {
-  const { user } = useAuth();
   const { data: conversations, isLoading } = useConversations();
-
   const renderConversation = ({ item }: { item: any }) => (
     <TouchableOpacity
       style={styles.conversationItem}
@@ -33,7 +31,7 @@ export default function Messenger() {
     >
       <Avatar size={50} url={item.other_user.avatar_url} />
       <View style={styles.conversationContent}>
-        <Text style={styles.username}>{item.other_user.username}</Text>
+        <ThemedText type="defaultSemiBold" style={styles.username}>{item.other_user.username}</ThemedText>
         <Text style={styles.lastMessage} numberOfLines={1}>
           {item.last_message.content}
         </Text>
@@ -63,7 +61,7 @@ export default function Messenger() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#fff" },
+  container: { flex: 1 },
   title: { paddingHorizontal: 16, marginBottom: 16 },
   conversationItem: {
     flexDirection: "row",
@@ -71,10 +69,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: "#f0f0f0",
+    borderBottomColor: Colors.light.icon,
   },
   conversationContent: { flex: 1, marginLeft: 15 },
-  username: { fontWeight: "bold", fontSize: 16, marginBottom: 4 },
+  username: {  marginBottom: 4 },
   lastMessage: { color: "#666" },
   emptyText: { textAlign: "center", marginTop: 50, color: "#888" },
 });

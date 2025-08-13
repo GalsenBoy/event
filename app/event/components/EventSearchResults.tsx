@@ -1,6 +1,7 @@
+import { ThemedText } from "@/components/ThemedText";
 import { Event } from "@/types/eventType";
 import { router } from "expo-router";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 
 export default function EventSearchResultCard({ event }: { event: Event }) {
   const eventDate = new Date(event.start_datetime).toLocaleDateString('fr-FR', {
@@ -8,10 +9,11 @@ export default function EventSearchResultCard({ event }: { event: Event }) {
     month: 'short',
     year: 'numeric'
   });
+  const background = useColorScheme() === "light" ? {backgroundColor:"#fff"} :  {backgroundColor:"#252525"}
 
   return (
     <TouchableOpacity 
-      style={eventCardStyles.container}
+      style={[eventCardStyles.container,background]}
       onPress={() => router.push(`/event/${event.id}`)}
     >
       <Image 
@@ -19,7 +21,7 @@ export default function EventSearchResultCard({ event }: { event: Event }) {
         style={eventCardStyles.image}
       />
       <View style={eventCardStyles.info}>
-        <Text style={eventCardStyles.name} numberOfLines={2}>{event.name}</Text>
+        <ThemedText type="defaultSemiBold" style={eventCardStyles.name} numberOfLines={2}>{event.name}</ThemedText>
         <Text style={eventCardStyles.date}>{eventDate}</Text>
       </View>
     </TouchableOpacity>
@@ -31,7 +33,6 @@ const eventCardStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 12,
-    backgroundColor: '#fff',
     borderRadius: 10,
     marginBottom: 10,
     elevation: 1,
@@ -48,8 +49,6 @@ const eventCardStyles = StyleSheet.create({
     justifyContent: 'center',
   },
   name: {
-    fontWeight: 'bold',
-    fontSize: 16,
     marginBottom: 4,
   },
   date: {
