@@ -2,13 +2,15 @@ import Avatar from "@/components/auth/Avatar";
 import { ThemedText } from "@/components/ThemedText";
 import { Profiles } from "@/types/eventType";
 import { router } from "expo-router";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 
 
 export default function UserSearchResultCard({ user }: { user: Profiles }) {
+    const background = useColorScheme() === "light" ? {backgroundColor:"#fff"} :  {backgroundColor:"#252525"}
+  
   return (
     <TouchableOpacity
-      style={userCardStyles.container}
+      style={[userCardStyles.container,background]}
       onPress={() => router.push(`/user/${user.id}`)}
     >
       <Avatar url={user.avatar_url} size={50} />
@@ -27,7 +29,6 @@ const userCardStyles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     padding: 12,
-    backgroundColor: "#fff",
     borderRadius: 10,
     marginBottom: 10,
     elevation: 1,

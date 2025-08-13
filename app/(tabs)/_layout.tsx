@@ -3,7 +3,7 @@ import TabBarBackground from "@/components/ui/TabBarBackground";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import useUserProfile from "@/hooks/useUserProfile";
-import { Ionicons } from "@expo/vector-icons";
+import { AntDesign, Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import React from "react";
 import { Image, Platform } from "react-native";
@@ -51,7 +51,7 @@ export default function TabLayout() {
         options={{
           title: "Créer",
           tabBarIcon: ({ color }) => (
-            <Ionicons size={28} name="add-circle"  color={color} />
+            <AntDesign size={24} name="pluscircle"  color={color} />
           ),
         }}
       />

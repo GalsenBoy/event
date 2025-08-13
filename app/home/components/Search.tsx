@@ -1,5 +1,5 @@
 import { Colors } from "@/constants/Colors";
-import { Feather } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { StyleSheet, TextInput, View } from "react-native";
 
@@ -22,7 +22,7 @@ export default function Search({ query, onQueryChange }: SearchProps) {
         autoCapitalize="none"
         autoCorrect={false}
       />
-      <Feather
+      <Ionicons
         name="filter"
         size={20}
         color={Colors.light.icon}
