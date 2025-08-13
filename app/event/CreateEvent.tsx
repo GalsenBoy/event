@@ -1,3 +1,4 @@
+import { ThemedText } from "@/components/ThemedText";
 import { Colors } from "@/constants/Colors";
 import { formatDateTime } from "@/lib/formatDateTime";
 import { supabase } from "@/lib/supabaseClient";
@@ -16,6 +17,7 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  useColorScheme,
   View,
 } from "react-native";
 import uuid from "react-native-uuid";
@@ -58,7 +60,7 @@ export default function CreateEventForm() {
   } = useForm<EventFormData>({
     resolver: zodResolver(schema),
     defaultValues: {
-      visibility: "public", 
+      visibility: "public",
     },
   });
 
@@ -67,6 +69,10 @@ export default function CreateEventForm() {
   const [activePicker, setActivePicker] = useState<"start" | "end" | null>(
     null
   );
+  const inpuBackground =
+    useColorScheme() === "light"
+      ? { backgroundColor: "#fff" }
+      : { backgroundColor: "#000" };
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -100,7 +106,7 @@ export default function CreateEventForm() {
         .from("event")
         .upload(filename, arrayBuffer, {
           contentType: "image/jpeg",
-          upsert: false, 
+          upsert: false,
         });
 
       if (error) {
@@ -145,7 +151,7 @@ export default function CreateEventForm() {
       const { error } = await supabase.from("event").insert([
         {
           ...formData,
-          user_id: user.id, 
+          user_id: user.id,
           photo_url,
           price: formData.price || null,
           start_datetime: new Date(formData.start_datetime).toISOString(),
@@ -173,15 +179,15 @@ export default function CreateEventForm() {
       style={styles.container}
       contentContainerStyle={{ paddingBottom: 50 }}
     >
-      <Text style={styles.header}>Créer un événement</Text>
+      <ThemedText type="title" style={styles.header}>Créer un événement</ThemedText>
 
-      <Text style={styles.label}>Nom de l’événement</Text>
+      <ThemedText type="defaultSemiBold" style={styles.label}>Nom de l’événement</ThemedText>
       <Controller
         control={control}
         name="name"
         render={({ field: { onChange, onBlur, value } }) => (
           <TextInput
-            style={styles.input}
+            style={[styles.input, inpuBackground]}
             placeholder="Ex: Super Randonnée au Lac"
             onBlur={onBlur}
             onChangeText={onChange}
@@ -192,13 +198,13 @@ export default function CreateEventForm() {
       {errors.name && (
         <Text style={styles.errorText}>{errors.name.message}</Text>
       )}
-      <Text style={styles.label}>Description</Text>
+      <ThemedText type="defaultSemiBold" style={styles.label}>Description</ThemedText>
       <Controller
         control={control}
         name="description"
         render={({ field: { onChange, onBlur, value } }) => (
           <TextInput
-            style={[styles.input, styles.textArea]}
+            style={[styles.input, styles.textArea, inpuBackground]}
             placeholder="Décrivez votre événement en quelques mots..."
             multiline
             numberOfLines={4}
@@ -212,7 +218,7 @@ export default function CreateEventForm() {
         <Text style={styles.errorText}>{errors.description.message}</Text>
       )}
 
-      <Text style={styles.label}>Type d'événement</Text>
+      <ThemedText type="defaultSemiBold" style={styles.label}>Type d'événement</ThemedText>
       <View style={styles.pickerContainer}>
         <Controller
           control={control}
@@ -237,13 +243,13 @@ export default function CreateEventForm() {
 
       <View style={styles.row}>
         <View style={styles.halfWidth}>
-          <Text style={styles.label}>Date & Heure de début</Text>
+          <ThemedText type="defaultSemiBold" style={styles.label}>Date & Heure de début</ThemedText>
           <Controller
             control={control}
             name="start_datetime"
             render={({ field: { onChange, value } }) => (
               <TouchableOpacity
-                style={styles.input}
+                style={[styles.input, inpuBackground]}
                 onPress={() => setActivePicker("start")}
               >
                 <Text style={value ? styles.dateText : styles.placeholderText}>
@@ -260,13 +266,13 @@ export default function CreateEventForm() {
         </View>
 
         <View style={styles.halfWidth}>
-          <Text style={styles.label}>Date & Heure de fin</Text>
+          <ThemedText type="defaultSemiBold" style={styles.label}>Date & Heure de fin</ThemedText>
           <Controller
             control={control}
             name="end_datetime"
             render={({ field: { onChange, value } }) => (
               <TouchableOpacity
-                style={styles.input}
+                style={[styles.input, inpuBackground]}
                 onPress={() => setActivePicker("end")}
               >
                 <Text style={value ? styles.dateText : styles.placeholderText}>
@@ -347,13 +353,13 @@ export default function CreateEventForm() {
         </View>
       </Modal>
 
-      <Text style={styles.label}>Adresse</Text>
+      <ThemedText type="defaultSemiBold" style={styles.label}>Adresse</ThemedText>
       <Controller
         control={control}
         name="address_street"
         render={({ field: { onChange, value } }) => (
           <TextInput
-            style={styles.input}
+            style={[styles.input, inpuBackground]}
             placeholder="N° et nom de la rue"
             value={value}
             onChangeText={onChange}
@@ -370,7 +376,7 @@ export default function CreateEventForm() {
             name="address_postal"
             render={({ field: { onChange, value } }) => (
               <TextInput
-                style={styles.input}
+                style={[styles.input, inpuBackground]}
                 placeholder="Code Postal"
                 value={value}
                 onChangeText={onChange}
@@ -391,7 +397,7 @@ export default function CreateEventForm() {
             name="address_city"
             render={({ field: { onChange, value } }) => (
               <TextInput
-                style={styles.input}
+                style={[styles.input, inpuBackground]}
                 placeholder="Ville"
                 value={value}
                 onChangeText={onChange}
@@ -408,7 +414,7 @@ export default function CreateEventForm() {
         name="address_extra"
         render={({ field: { onChange, value } }) => (
           <TextInput
-            style={styles.input}
+            style={[styles.input, inpuBackground]}
             placeholder="Bâtiment, étage, etc. (optionnel)"
             value={value}
             onChangeText={onChange}
@@ -418,13 +424,13 @@ export default function CreateEventForm() {
 
       <View style={styles.row}>
         <View style={styles.halfWidth}>
-          <Text style={styles.label}>Tarif (€)</Text>
+          <ThemedText type="defaultSemiBold" style={styles.label}>Tarif (€)</ThemedText>
           <Controller
             control={control}
             name="price"
             render={({ field: { onChange, value } }) => (
               <TextInput
-                style={styles.input}
+                style={[styles.input, inpuBackground]}
                 placeholder="Gratuit si vide"
                 value={value}
                 onChangeText={onChange}
@@ -434,7 +440,7 @@ export default function CreateEventForm() {
           />
         </View>
         <View style={styles.halfWidth}>
-          <Text style={styles.label}>Visibilité</Text>
+          <ThemedText type="defaultSemiBold" style={styles.label}>Visibilité</ThemedText>
           <Controller
             control={control}
             name="visibility"
@@ -482,7 +488,7 @@ export default function CreateEventForm() {
         </View>
       </View>
 
-      <Text style={styles.label}>Photo de l'événement</Text>
+      <ThemedText type="defaultSemiBold" style={styles.label}>Photo de l'événement</ThemedText>
       <TouchableOpacity style={styles.imagePicker} onPress={pickImage}>
         <Text style={styles.imagePickerText}>Choisir une image...</Text>
       </TouchableOpacity>
@@ -506,24 +512,19 @@ export default function CreateEventForm() {
 }
 
 const BORDER_COLOR = "#ddd";
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#f9f9f9",
   },
   header: {
     fontSize: 28,
-    fontWeight: "bold",
     marginBottom: 20,
     textAlign: "center",
-    color: "#333",
   },
   label: {
-    fontSize: 16,
-    fontWeight: "500",
     marginBottom: 8,
-    color: "#555",
   },
   input: {
     backgroundColor: "#fff",
@@ -627,7 +628,7 @@ const styles = StyleSheet.create({
     color: "#333",
   },
   placeholderText: {
-    color: "#999",
+    color: "#888",
   },
   modalOverlay: {
     flex: 1,
@@ -678,11 +679,10 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   pickerContainer: {
-    backgroundColor: "#fff",
     borderWidth: 1,
-    borderColor: BORDER_COLOR, 
+    borderColor: BORDER_COLOR,
     borderRadius: 8,
     marginBottom: 5,
-    justifyContent: "center", 
+    justifyContent: "center",
   },
 });

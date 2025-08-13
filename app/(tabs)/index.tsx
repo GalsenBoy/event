@@ -174,7 +174,6 @@ export default function HomeScreen() {
     />
   );
 
-  // Composant pour afficher les événements filtrés (sans recherche)
   const FilteredEvents = () => (
     <SectionList
       sections={[{
@@ -194,7 +193,6 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header avec recherche et filtre */}
       <View style={styles.searchContainer}>
         <View style={styles.searchWrapper}>
           <Search
@@ -219,7 +217,6 @@ export default function HomeScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* Affichage conditionnel du contenu */}
       {hasSearchResults ? (
         <SearchResults />
       ) : hasActiveFilters ? (
@@ -227,8 +224,6 @@ export default function HomeScreen() {
       ) : (
         <EventsVisibilityTabs />
       )}
-
-      {/* Modal de filtres */}
       <EventFilterModal
         visible={showFilterModal}
         onClose={() => setShowFilterModal(false)}
@@ -245,7 +240,6 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f0f2f5",
   },
   searchContainer: {
     flexDirection: 'row',

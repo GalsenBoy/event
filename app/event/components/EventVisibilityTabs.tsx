@@ -84,14 +84,12 @@ const styles = StyleSheet.create({
   },
   activeTab: {
     borderBottomWidth: 2,
-    //borderColor: colorScheme === "dark" ? Colors.dark.tint : Colors.light.tint,
   },
   tabText: {
     fontSize: 14,
     color: "#888",
   },
   activeText: {
-    //color: colorScheme === "dark" ? Colors.dark.text : Colors.light.text,
     fontWeight: "bold",
   },
 });

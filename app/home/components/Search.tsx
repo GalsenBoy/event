@@ -9,11 +9,13 @@ interface SearchProps {
 }
 
 export default function Search({ query, onQueryChange }: SearchProps) {
+  
   return (
     <View style={styles.flexRow}>
       <TextInput
         style={styles.input}
         placeholder="Chercher un event, un utilisateur..."
+        placeholderTextColor={"#888"}
         value={query}
         onChangeText={onQueryChange}
         clearButtonMode="always"
