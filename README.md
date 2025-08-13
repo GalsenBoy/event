@@ -1,50 +1,86 @@
-# Welcome to your Expo app 👋
+📄 README — Application AVANTI
+📌 Description
+Cette application mobile, développée avec React Native, Expo et Supabase, permet :
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+De créer et gérer des événements (privés ou publics)
 
-## Get started
+De rejoindre des groupes et interagir via une carte des événements
 
-1. Install dependencies
+De discuter entre utilisateurs (chat en temps réel)
 
-   ```bash
-   npm install
-   ```
+D’afficher et filtrer les événements par type, date, ville et tarif
 
-2. Start the app
+D’intégrer des événements externes via l’API Eventbrite (en cours de développement)
 
-   ```bash
-   npx expo start
-   ```
+🛠️ Stack technique
+Framework mobile : React Native + Expo
 
-In the output, you'll find options to open the app in a
+Backend / BDD : Supabase (PostgreSQL + Auth + Storage + RLS)
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+Gestion d’état : Zustand
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+Requêtes / Data Fetching : React Query
 
-## Get a fresh project
+Navigation : React Router Native
 
-When you're ready, run:
+Localisation : expo-location
+
+API externe : Eventbrite API
 
 ```bash
-npm run reset-project
+📦 app
+ ┣ 📂 home
+ ┃ ┗ 📂 components
+ ┃    ┗ 📜 CardHome.tsx      # Carte événement
+ ┣ 📂 chat                   # Écrans de messagerie
+ ┣ 📂 profile                # Gestion des profils utilisateurs
+ ┣ 📂 events                 # Pages de création / liste d'événements
+ ┣ 📜 App.tsx                 # Entrée principale
+📦 hooks                     # Hooks personnalisés (useSavedEvents, etc.)
+📦 components
+ ┣ 📂 ui                     # Composants réutilisables (Loading, Modal, etc.)
+📦 services
+ ┣ 📜 supabase.ts            # Initialisation Supabase
+ ┣ 📜 eventbrite.ts          # Requêtes vers API Eventbrite
+📦 types                     # Types TypeScript
+.env                         # Variables d’environnement
 ```
+⚙️ Installation
+Cloner le projet
+```bash
+git clone https://github.com/ton-repo/app-events.git
+cd app-events
+```
+Installer les dépendances
+```bash
+npm install
+# ou
+yarn install
+```
+Configurer les variables d’environnement
+Créer un fichier .env à la racine :
+```bash
+EXPO_PUBLIC_SUPABASE_URL=ton_url_supabase
+EXPO_PUBLIC_SUPABASE_ANON_KEY=ta_cle_supabase
+EXPO_PUBLIC_EVENTBRITE_TOKEN=ton_token_eventbrite
+```
+Lancer l’application
+```bash
+npx expo start
+```
+📡 API Supabase
+Tables principales :
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+profiles : infos utilisateurs (avatar, bio, etc.)
 
-## Learn more
+events : événements créés
 
-To learn more about developing your project with Expo, look at the following resources:
+conversations : liste des conversations (chat)
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+messages : messages envoyés/reçus
 
-## Join the community
+saved_events : événements enregistrés par un utilisateur
 
-Join our community of developers creating universal apps.
+RLS activées :
+Chaque table possède des règles de sécurité pour que les utilisateurs ne voient que leurs données ou les événements publics.
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
