@@ -49,7 +49,7 @@ API externe : Eventbrite API
 ⚙️ Installation
 Cloner le projet
 ```bash
-git clone https://github.com/ton-repo/app-events.git
+git clone https://github.com/GalsenBoy/event.git
 cd app-events
 ```
 Installer les dépendances
