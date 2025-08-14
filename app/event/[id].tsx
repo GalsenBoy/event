@@ -9,6 +9,7 @@ import { useLocalSearchParams } from "expo-router";
 import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import CardHome from "../home/components/CardHome";
 import CommentSection from "./comments/CommentSection";
+import ReportEvent from "./components/ReportEvent";
 
 export default function DetailsEvent() {
   const { id: eventId } = useLocalSearchParams<{ id: string }>();
@@ -60,6 +61,7 @@ export default function DetailsEvent() {
         <ThemedText>
           {event.description || "Aucune description disponible."}
         </ThemedText>
+        <ReportEvent eventId={eventId}/>
         <View style={[styles.bar, { marginVertical: 10 }]}></View>
         <CommentSection eventId={eventId} />
       </ScrollView>
