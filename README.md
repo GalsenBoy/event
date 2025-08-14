@@ -26,7 +26,7 @@ Navigation : React Router Native
 
 Localisation : expo-location
 
-API externe : Eventbrite API
+API externe : Eventbrite API - pas totalement implémenter 
 
 ```bash
 📦 app
@@ -70,17 +70,18 @@ Lancer l’application
 npx expo start
 ```
 📡 API Supabase
+(faire attentation sur les noms de tables je suis parti sur event sans (s) même si avec un (s) est plus adapté j'ai pas pu changer car j'avais beaucoup avancer sur le projet
 Tables principales :
 
 profiles : infos utilisateurs (avatar, bio, etc.)
 
-events : événements créés
+event : événements créés
 
 conversations : liste des conversations (chat)
 
 messages : messages envoyés/reçus
 
-saved_events : événements enregistrés par un utilisateur
+saved_event : événements enregistrés par un utilisateur
 
 RLS activées :
 Chaque table possède des règles de sécurité pour que les utilisateurs ne voient que leurs données ou les événements publics.
