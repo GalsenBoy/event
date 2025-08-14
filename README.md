@@ -1,4 +1,5 @@
 📄 README — Application AVANTI
+
 📌 Description
 Cette application mobile, développée avec React Native, Expo et Supabase, permet :
 
