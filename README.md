@@ -22,11 +22,11 @@ Gestion d’état : Zustand
 
 Requêtes / Data Fetching : React Query
 
-Navigation : React Router Native
+Navigation : Expo Router
 
 Localisation : expo-location
 
-API externe : Eventbrite API - pas totalement implémenter 
+API externe : Eventbrite API - finalement abandonné
 
 ```bash
 📦 app
@@ -50,7 +50,7 @@ API externe : Eventbrite API - pas totalement implémenter
 Cloner le projet
 ```bash
 git clone https://github.com/GalsenBoy/event.git
-cd app-events
+cd event
 ```
 Installer les dépendances
 ```bash
@@ -61,16 +61,16 @@ yarn install
 Configurer les variables d’environnement
 Créer un fichier .env à la racine :
 ```bash
-EXPO_PUBLIC_SUPABASE_URL=ton_url_supabase
-EXPO_PUBLIC_SUPABASE_ANON_KEY=ta_cle_supabase
-EXPO_PUBLIC_EVENTBRITE_TOKEN=ton_token_eventbrite
+EXPO_PUBLIC_SUPABASE_URL=A DONNER
+EXPO_PUBLIC_SUPABASE_ANON_KEY=A DONNER
+EXPO_PUBLIC_EVENTBRITE_TOKEN=A DONNER
 ```
 Lancer l’application
 ```bash
 npx expo start
 ```
 📡 API Supabase
-(faire attentation sur les noms de tables je suis parti sur event sans (s) même si avec un (s) est plus adapté j'ai pas pu changer car j'avais beaucoup avancer sur le projet
+(faiS attention sur les noms de tables je suis parti sur event sans (s) même si avec un (s) est plus adapté j'ai pas pu changer car j'avais beaucoup avancer sur le projet
 Tables principales :
 
 profiles : infos utilisateurs (avatar, bio, etc.)
