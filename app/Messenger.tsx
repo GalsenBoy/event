@@ -33,7 +33,7 @@ export default function Messenger() {
       <View style={styles.conversationContent}>
         <ThemedText type="defaultSemiBold" style={styles.username}>{item.other_user.username}</ThemedText>
         <Text style={styles.lastMessage} numberOfLines={1}>
-          {item.last_message.content}
+          {item.last_message.content || "Aucun message"}
         </Text>
       </View>
     </TouchableOpacity>
@@ -42,7 +42,6 @@ export default function Messenger() {
   if (isLoading) {
     return <ActivityIndicator style={{ flex: 1 }} />;
   }
-
   return (
     <SafeAreaView style={styles.container}>
       <ThemedText type="title" style={styles.title}>

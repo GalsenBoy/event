@@ -56,11 +56,11 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="messenger"
+        name="groups"
         options={{
-          title: "Discussions",
+          title: "Groupes",
           tabBarIcon: ({ color }) => (
-            <Ionicons size={24} name="chatbubble-outline" color={color} />
+            <Ionicons size={24} name="people-outline" color={color} />
           ),
         }}
       />
