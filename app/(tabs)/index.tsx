@@ -1,7 +1,9 @@
 import { ThemedText } from "@/components/ThemedText";
+import { Colors } from "@/constants/Colors";
 import { useAllEvents } from "@/hooks/event/useAllEvents";
 import { useAllUsers } from "@/hooks/useAllUsers";
 import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import { useMemo, useState } from "react";
 import {
   SectionList,
@@ -10,7 +12,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import EventFilterModal, {
   EventFilters,
 } from "../event/components/EventFilterModal";
@@ -235,7 +236,19 @@ export default function HomeScreen() {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={()=>router.push('/Notifications')}>
+          <Ionicons
+            name="notifications-outline"
+            size={28}
+            color={"#e4dcdcff"}
+          />
+        </TouchableOpacity>
+       <TouchableOpacity onPress={()=>router.push('/Messenger')}>
+         <Ionicons name="chatbubble-outline" size={28} color={"#e4dcdcff"} />
+       </TouchableOpacity>
+      </View>
       <View style={styles.searchContainer}>
         <View style={styles.searchWrapper}>
           <Search query={searchQuery} onQueryChange={setSearchQuery} />
@@ -276,13 +289,24 @@ export default function HomeScreen() {
         availableEventTypes={availableEventTypes}
         availableCities={availableCities}
       />
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  header: {
+    backgroundColor: Colors.light.tint,
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignItems: "center",
+    height: 90,
+    marginBottom: 10,
+    paddingRight: 10,
+    paddingTop: 20,
+    gap: 7,
   },
   searchContainer: {
     flexDirection: "row",
