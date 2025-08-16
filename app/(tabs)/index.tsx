@@ -3,7 +3,7 @@ import { Colors } from "@/constants/Colors";
 import { useAllEvents } from "@/hooks/event/useAllEvents";
 import { useAllUsers } from "@/hooks/useAllUsers";
 import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
+import { Link, router } from "expo-router";
 import { useMemo, useState } from "react";
 import {
   SectionList,
@@ -249,6 +249,9 @@ export default function HomeScreen() {
          <Ionicons name="chatbubble-outline" size={28} color={"#e4dcdcff"} />
        </TouchableOpacity>
       </View>
+      <Link style={{color:"#999"}} href={'/admin/EventReport'}>
+        Vers ADmin - test
+      </Link>
       <View style={styles.searchContainer}>
         <View style={styles.searchWrapper}>
           <Search query={searchQuery} onQueryChange={setSearchQuery} />
@@ -305,7 +308,7 @@ const styles = StyleSheet.create({
     height: 90,
     marginBottom: 10,
     paddingRight: 10,
-    paddingTop: 20,
+    paddingTop: 40,
     gap: 7,
   },
   searchContainer: {
