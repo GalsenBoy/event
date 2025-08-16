@@ -1,11 +1,8 @@
 import { supabase } from "@/lib/supabaseClient";
 import { Event } from "@/types/eventType";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Alert } from "react-native";
+import { useQuery } from "@tanstack/react-query";
 
 export const useEvents = (visibility: "public" | "private") => {
-  const queryClient = useQueryClient();
-
   const {
     data: events,
     isLoading,
@@ -28,29 +25,8 @@ export const useEvents = (visibility: "public" | "private") => {
     },
   });
 
-  const deleteMutation = useMutation({
-    mutationFn: async (eventId: string) => {
-      const { error } = await supabase.from("event").delete().eq("id", eventId);
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["events"] });
-    },
-    onError: (err: any) => {
-      Alert.alert("Erreur", err.message || "Échec de la suppression");
-    },
-  });
 
-  const deleteEvent = (id: string) => {
-    Alert.alert("Supprimer", "Confirmer la suppression de l'événement ?", [
-      { text: "Annuler", style: "cancel" },
-      {
-        text: "Supprimer",
-        onPress: () => deleteMutation.mutate(id),
-        style: "destructive",
-      },
-    ]);
-  };
+
 
   return {
     events,
@@ -58,7 +34,5 @@ export const useEvents = (visibility: "public" | "private") => {
     isError,
     error,
     refetch,
-    deleteEvent,
-    isDeleting: deleteMutation.isPending,
   };
 };
